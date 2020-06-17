@@ -16,15 +16,20 @@ const User = require("../../models/User");
 router.post("/register", (req, res) => {
   // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
-  console.log("hi")
   // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
-  User.findOne({ email: req.body.email }).then((user) => {
-    if (user) {
+  User.findOne({
+    $or: [{ email: req.body.email }, { link: req.body.link }],
+  }).then((user) => {
+    if (user.email === req.body.email) {
       return res.status(400).json({ email: "Email already exists" });
+    } else if (user.link === req.body.link) {
+      return res
+        .status(400)
+        .json({ link: "A user with that link already exists" });
     } else {
       const newUser = new User({
         first: req.body.first,
