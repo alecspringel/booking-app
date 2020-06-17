@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import MeetingList from "./MeetingList";
 import EventForm from "./EventForm";
+import SetupPage from "./SetupPage";
 
 class Dashboard extends Component {
   onLogoutClick = (e) => {
@@ -20,10 +21,7 @@ class Dashboard extends Component {
           <div className="col s12 center-align">
             <h4>
               <b>Hey there,</b> {user.first.split(" ")[0]}
-              <p className="flow-text grey-text text-darken-1">
-                You are logged into a full-stack{" "}
-                <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
-              </p>
+              <SetupPage />
             </h4>
 
             <button
