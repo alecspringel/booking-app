@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Meeting = require('./Meeting')
+const Meeting = require("./Meeting");
+const Schedule = require("./Schedule");
 
 // Create Schema
 const UserSchema = new Schema({
@@ -30,8 +31,46 @@ const UserSchema = new Schema({
   },
   meetings: {
     type: [Meeting.Schema],
-    default: []
-  }
+    default: [],
+  },
+  schedules: {
+    type: [Schedule.Schema],
+    default: [defaultSchedule],
+  },
+});
+
+//Default schedule
+const weekdays = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+var defaultSchedule = {
+  Monday: { available: false },
+  Tuesday: { available: false },
+  Wednesday: { available: false },
+  Thursday: { available: false },
+  Friday: { available: false },
+  Saturday: { available: false },
+  Sunday: { available: false },
+};
+const start = {
+  hour: 9,
+  minute: 0,
+  amPm: "AM",
+};
+const end = {
+  hour: 9,
+  minute: 0,
+  amPm: "AM",
+};
+weekdays.map((day) => {
+  defaultSchedule[day].start = start;
+  defaultSchedule[day].end = end;
 });
 
 module.exports = User = mongoose.model("users", UserSchema);

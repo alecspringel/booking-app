@@ -18,7 +18,7 @@ class TimeSelector extends Component {
     this.state = {
       hour: "9",
       minute: "00",
-      AmPm: "AM",
+      AmPm: this.props.default,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleAmPm = this.handleAmPm.bind(this);
@@ -43,29 +43,32 @@ class TimeSelector extends Component {
       if (time > 12 || time < 1) {
         return;
       } else {
-        this.setState({ hour: time });
+        this.setState({ hour: time }, this.timeHandler);
       }
     } else {
       if (time > 60 || time < 0) {
         return;
       } else {
-        this.setState({ minute: this.padMinutes(time) });
+        this.setState({ minute: this.padMinutes(time) }, this.timeHandler);
       }
     }
   }
 
   handleAmPm(e) {
-    this.setState({ AmPm: e.target.value });
-    console.log(this.state);
+    this.setState({ AmPm: e.target.value }, this.timeHandler);
   }
 
   timeHandler() {
-    this.props.timeHandler(this.state.hour, this.state.minute, this.state.AmPm);
+    this.props.timeHandler(
+      this.state.hour,
+      parseInt(this.state.minute),
+      this.state.AmPm
+    );
   }
 
   render() {
     return (
-      <div>
+      <>
         <HourInput
           name="hour"
           type="text"
@@ -80,12 +83,23 @@ class TimeSelector extends Component {
           value={this.state.minute}
         />
         <AMPM onChange={this.handleAmPm}>
-          <option value="AM" selected="selected">
-            AM
-          </option>
-          <option value="PM">PM</option>
+          {this.props.default === "AM" ? (
+            <>
+              <option value="AM" selected="selected">
+                AM
+              </option>
+              <option value="PM">PM</option>
+            </>
+          ) : (
+            <>
+              <option value="AM">AM</option>
+              <option value="PM" selected="selected">
+                PM
+              </option>
+            </>
+          )}
         </AMPM>
-      </div>
+      </>
     );
   }
 }
