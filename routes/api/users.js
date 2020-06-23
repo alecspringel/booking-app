@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
+const { authUser } = require("../../middleware/authUser");
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
@@ -104,5 +105,15 @@ router.post("/login", (req, res) => {
     });
   });
 });
+
+router.post('/createSchedule', authUser, (req, res) => {
+  // Get authorized user from decoded token (in middleware)
+  const authUserID = req.user.id;
+  const newSchedule = req.body.newSchedule
+  console.log(newSchedule)
+  User.findById( authUserID ).then((user) => {
+    res.send(user.meetings)
+  })
+})
 
 module.exports = router;

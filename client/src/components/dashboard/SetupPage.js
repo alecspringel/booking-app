@@ -15,25 +15,19 @@ class SetupPage extends Component {
       "Sunday",
     ];
     var initState = {
-      Monday: { available: false },
-      Tuesday: { available: false },
-      Wednesday: { available: false },
-      Thursday: { available: false },
-      Friday: { available: false },
-      Saturday: { available: false },
-      Sunday: { available: false },
+      Monday: { },
+      Tuesday: { },
+      Wednesday: { },
+      Thursday: { },
+      Friday: { },
+      Saturday: { },
+      Sunday: { },
     };
-    const start = {
-      hour: 9,
-      minute: 0,
-      amPm: "AM",
-    };
-    const end = {
-      hour: 9,
-      minute: 0,
-      amPm: "AM",
-    };
+    const start = 540;
+    const end = 1260;
+
     weekdays.map((day) => {
+      initState[day].active = false;
       initState[day].start = start;
       initState[day].end = end;
     });
@@ -47,6 +41,8 @@ class SetupPage extends Component {
     console.log(weekday, startEnd, hour, minute, amPm);
     var update = null;
     if (startEnd === "start") {
+      minutes += (hour * 60) + minutes
+      if(amPm == "Pm")
       update = {
         start: {
           hour,
@@ -74,11 +70,12 @@ class SetupPage extends Component {
 
   saveSchedule() {
     console.log(this.state);
+    
   }
 
   toggleDay(weekday, checked) {
     var day = this.state[weekday];
-    day.available = checked;
+    day.active = checked;
     this.setState({
       [weekday]: day,
     });
