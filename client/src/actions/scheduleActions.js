@@ -22,3 +22,18 @@ export const createSchedule = (newSchedule) => (dispatch) => {
       })
     );
 };
+
+export const getSchedule = (userURL, date) => (dispatch) => {
+  axios
+    .get("/api/users/schedule", { params: { userURL, date }})
+    .then((res) => {
+      console.log(res.data);
+      //dispatch(setBookingPage(res.data));
+    })
+    .catch((err) =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err,
+      })
+    );
+};

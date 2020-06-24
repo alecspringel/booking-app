@@ -20,7 +20,6 @@ router.get("/:userURL", (req, res) => {
       first: user.first,
       last: user.last,
     };
-    console.log(user);
     res.send(userData);
   });
 });
