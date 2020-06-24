@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Meeting = require("./Meeting");
-const Schedule = require("./Schedule");
-
 
 // Create Schema
 const UserSchema = new Schema({
@@ -35,7 +33,13 @@ const UserSchema = new Schema({
     default: [],
   },
   schedules: {
-    type: [Schedule.Schema],
+    type: [
+      {
+        weekday: { type: Number, min: 0, max: 6 },
+        start: { type: Number, min: 0, max: 1439 },
+        end: { type: Number, min: 0, max: 1439 },
+      },
+    ],
     default: [],
   },
 });

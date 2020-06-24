@@ -1,17 +1,19 @@
 import axios from "axios";
+import { GET_ERRORS } from "./types";
 
-export const createMeeting = (newSchedule) => (dispatch) => {
-  const token = localStorage.getItem("jwtToken")
+export const createSchedule = (newSchedule) => (dispatch) => {
+  const token = localStorage.getItem("jwtToken");
   const storedToken = {
     headers: {
-       Authorization: token
-    }
-  }
+      Authorization: token,
+    },
+  };
   axios
-    .post("/api/user/createSchedule", {newSchedule, storedToken})
+    .post("/api/users/createSchedule", { newSchedule, storedToken })
     .then((res) => {
-      // dispatch(addEventToList(res.data));
-      console.log(res.data)
+      //dispatch(setSchedule(res.data));
+      console.log("hello");
+      console.log(res.data);
     })
     .catch((err) =>
       dispatch({

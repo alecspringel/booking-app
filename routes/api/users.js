@@ -25,12 +25,14 @@ router.post("/register", (req, res) => {
   User.findOne({
     $or: [{ email: req.body.email }, { link: req.body.link }],
   }).then((user) => {
-    if (user.email === req.body.email) {
-      return res.status(400).json({ email: "Email already exists" });
-    } else if (user.link === req.body.link) {
-      return res
-        .status(400)
-        .json({ link: "A user with that link already exists" });
+    if (user) {
+      if (user.email === req.body.email) {
+        return res.status(400).json({ email: "Email already exists" });
+      } else {
+        return res
+          .status(400)
+          .json({ link: "A user with that link already exists" });
+      }
     } else {
       const newUser = new User({
         first: req.body.first,
@@ -106,14 +108,29 @@ router.post("/login", (req, res) => {
   });
 });
 
-router.post('/createSchedule', authUser, (req, res) => {
+router.post("/createSchedule", authUser, (req, res) => {
   // Get authorized user from decoded token (in middleware)
   const authUserID = req.user.id;
-  const newSchedule = req.body.newSchedule
-  console.log(newSchedule)
-  User.findById( authUserID ).then((user) => {
-    res.send(user.meetings)
-  })
-})
+  User.findById(authUserID).then((user) => {
+    if (!user) {
+      return res.status(404).json({ email: "User does not exist" });
+    } else {
+      var updatedSchedule = [];
+      const newSchedule = req.body.newSchedule;
+      // newSchedule.forEach((day) => {
+      //   const daySchedule = new Schedule({
+      //     weekday: day.weekday,
+      //     start: day.start,
+      //     end: day.end,
+      //   });
+      //   updatedSchedule.push(daySchedule);
+      // });
+
+      user.schedules = newSchedule;
+      user.save();
+      res.send(newSchedule);
+    }
+  });
+});
 
 module.exports = router;

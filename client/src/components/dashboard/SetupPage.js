@@ -1,32 +1,28 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import TimeSelector from "../general/TimeSelector";
 import DayConfig from "../general/DayConfig";
+import { createSchedule } from "../../actions/scheduleActions";
+
+const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6];
 
 class SetupPage extends Component {
   constructor(props) {
     super(props);
-    const weekdays = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ];
+
     var initState = {
-      Monday: { },
-      Tuesday: { },
-      Wednesday: { },
-      Thursday: { },
-      Friday: { },
-      Saturday: { },
-      Sunday: { },
+      0: {},
+      1: {},
+      2: {},
+      3: {},
+      4: {},
+      5: {},
+      6: {},
     };
     const start = 540;
     const end = 1260;
 
-    weekdays.map((day) => {
+    WEEKDAYS.map((day) => {
       initState[day].active = false;
       initState[day].start = start;
       initState[day].end = end;
@@ -40,28 +36,30 @@ class SetupPage extends Component {
   setSchedule(weekday, startEnd, hour, minute, amPm) {
     console.log(weekday, startEnd, hour, minute, amPm);
     var update = null;
+    //Convert time into minutes past midnight
+    var totalMin = hour * 60 + minute;
+    if (amPm === "PM") {
+      totalMin += 60 * 12;
+    } else {
+      // 12 AM should === 0:00
+      if (hour === 12) {
+        totalMin -= 60 * 12;
+      }
+    }
+    //Update start/end
     if (startEnd === "start") {
-      minutes += (hour * 60) + minutes
-      if(amPm == "Pm")
       update = {
-        start: {
-          hour,
-          minute,
-          amPm,
-        },
+        active: this.state[weekday].active,
+        start: totalMin,
         end: this.state[weekday].end,
       };
     } else {
       update = {
-        end: {
-          hour,
-          minute,
-          amPm,
-        },
+        active: this.state[weekday].active,
+        end: totalMin,
         start: this.state[weekday].start,
       };
     }
-
     this.setState({
       [weekday]: update,
     });
@@ -69,8 +67,21 @@ class SetupPage extends Component {
   }
 
   saveSchedule() {
-    console.log(this.state);
-    
+    var newSchedule = [];
+    WEEKDAYS.forEach((weekday) => {
+      var day = this.state[weekday];
+      if (day.active) {
+        const newDay = {
+          weekday,
+          start: day.start,
+          end: day.end,
+        };
+        newSchedule.push(newDay);
+      }
+    });
+    if (newSchedule.length !== 0) {
+      this.props.createSchedule(newSchedule);
+    }
   }
 
   toggleDay(weekday, checked) {
@@ -86,36 +97,43 @@ class SetupPage extends Component {
       <div>
         <DayConfig
           day="Monday"
+          value="0"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
           day="Tuesday"
+          value="1"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
           day="Wednesday"
+          value="2"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
           day="Thursday"
+          value="3"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
           day="Friday"
+          value="4"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
           day="Saturday"
+          value="5"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
           day="Sunday"
+          value="6"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
@@ -125,4 +143,4 @@ class SetupPage extends Component {
   }
 }
 
-export default SetupPage;
+export default connect(null, { createSchedule })(SetupPage);

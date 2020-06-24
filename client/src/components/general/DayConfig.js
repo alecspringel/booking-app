@@ -12,16 +12,16 @@ class DayConfig extends Component {
     this.handleEnd = this.handleEnd.bind(this);
   }
   handleStart(hour, minute, amPm) {
-    this.props.setSchedule(this.props.day, "start", hour, minute, amPm);
+    this.props.setSchedule(this.props.value, "start", hour, minute, amPm);
   }
 
   handleEnd(hour, minute, amPm) {
-    this.props.setSchedule(this.props.day, "end", hour, minute, amPm);
+    this.props.setSchedule(this.props.value, "end", hour, minute, amPm);
   }
 
   check() {
     this.setState({ checked: !this.state.checked }, () =>
-      this.props.toggleDay(this.props.day, this.state.checked)
+      this.props.toggleDay(this.props.value, this.state.checked)
     );
   }
 

@@ -47,22 +47,19 @@ class Register extends Component {
       password2: this.state.password2,
       link: this.state.link,
     };
+    console.log(newUser);
     this.props.registerUser(newUser, this.props.history);
   };
-  
+
   render() {
     const { errors } = this.state;
     return (
       <div>
         <div>
           <div>
-            <Link to="/">
-              Home
-            </Link>
+            <Link to="/">Home</Link>
             <div>
-              <h4>
-                Register
-              </h4>
+              <h4>Register</h4>
               <p>
                 Already have an account? <Link to="/login">Log in</Link>
               </p>
@@ -153,11 +150,7 @@ class Register extends Component {
                 <span>{errors.link}</span>
               </div>
               <div>
-                <button
-                  type="submit"
-                >
-                  Sign up
-                </button>
+                <button type="submit">Sign up</button>
               </div>
             </form>
           </div>
