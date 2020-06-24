@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { authUser } = require("../../middleware/authUser");
-const { addMinutes } = require("../../helpers/date")
-var moment = require('moment');
+const { addMinutes } = require("../../helpers/date");
 
 router.post("/schedule/create", authUser, (req, res) => {
   // Get authorized user from decoded token (in middleware)
@@ -27,27 +26,40 @@ router.get("/schedule", authUser, (req, res) => {
     if (!user) {
       return res.status(404).json({ email: "User does not exist" });
     } else {
-      console.log(user)
-      var date = moment(new Date(req.query.date).setHours(0,0,0,0));
+      var date = new Date(req.query.date);
+      date.setHours(0, 0, 0, 0);
 
-      console.log("date:", date)
-      // var dateWeekday = date.getDay()
-      // var schedule = user.schedules.week.filter(day => {
-      //   return day.weekday === dateWeekday
-      // });
-      // // If user is not taking meetings that day, send null
-      // if(schedule.length === 0) {
-      //   res.send(null)
-      //   return
-      // }
-      // console.log(schedule)
+      // Get the schedule (from the user) for that weekday
+      var dateWeekday = date.getDay();
+      var schedule = user.schedules.week.filter((day) => {
+        return day.weekday === dateWeekday;
+      });
 
-      // // Process meeting slots
-      // const start = addMinutes(date, schedule[0].start)
-      // const end = addMinutes(date, schedule[0].end)
-      // console.log(start, end)
+      // If user is not taking meetings that day, send empty list
+      if (schedule.length === 0) {
+        res.send([]);
+        return;
+      }
 
+      // Process meeting slots
+      const start = addMinutes(date, schedule[0].start);
+      const end = addMinutes(date, schedule[0].end);
 
+      var schedList = [];
+      var schedStart = start;
+      var schedEnd = addMinutes(start, user.schedules.interval);
+
+      while (schedEnd < end) {
+        const slot = {
+          available: true,
+          start: schedStart,
+          end: schedEnd,
+        };
+        schedList.push(slot);
+        schedStart = addMinutes(schedStart, user.schedules.interval);
+        schedEnd = addMinutes(schedEnd, user.schedules.interval);
+      }
+      res.send(schedList);
     }
   });
 });

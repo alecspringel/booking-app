@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS } from "./types";
+import { GET_ERRORS, SET_BOOKING_SCHEDULE } from "./types";
 
 export const createSchedule = (newSchedule) => (dispatch) => {
   const token = localStorage.getItem("jwtToken");
@@ -12,7 +12,6 @@ export const createSchedule = (newSchedule) => (dispatch) => {
     .post("/api/users/schedule/create", { newSchedule, storedToken })
     .then((res) => {
       //dispatch(setSchedule(res.data));
-      console.log("hello");
       console.log(res.data);
     })
     .catch((err) =>
@@ -25,10 +24,11 @@ export const createSchedule = (newSchedule) => (dispatch) => {
 
 export const getSchedule = (userURL, date) => (dispatch) => {
   axios
-    .get("/api/users/schedule", { params: { userURL, date }})
+    .get("/api/users/schedule", { params: { userURL, date } })
     .then((res) => {
+      console.log("Testing");
       console.log(res.data);
-      //dispatch(setBookingPage(res.data));
+      dispatch(setSchedule(res.data));
     })
     .catch((err) =>
       dispatch({
@@ -36,4 +36,11 @@ export const getSchedule = (userURL, date) => (dispatch) => {
         payload: err,
       })
     );
+};
+
+export const setSchedule = (schedule) => {
+  return {
+    type: SET_BOOKING_SCHEDULE,
+    payload: schedule,
+  };
 };
