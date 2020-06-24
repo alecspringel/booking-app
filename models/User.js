@@ -34,6 +34,7 @@ const UserSchema = new Schema({
   },
   schedules: {
     interval: { type: Number, min: 0, max: 1439 },
+    timezone: Number,
     week: [
       {
         weekday: { type: Number, min: 0, max: 6 },

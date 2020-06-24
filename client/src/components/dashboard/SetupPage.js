@@ -97,43 +97,43 @@ class SetupPage extends Component {
       <div>
         <DayConfig
           day="Monday"
-          value="0"
-          setSchedule={this.setSchedule}
-          toggleDay={this.toggleDay}
-        />
-        <DayConfig
-          day="Tuesday"
           value="1"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
-          day="Wednesday"
+          day="Tuesday"
           value="2"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
-          day="Thursday"
+          day="Wednesday"
           value="3"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
-          day="Friday"
+          day="Thursday"
           value="4"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
-          day="Saturday"
+          day="Friday"
           value="5"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
         <DayConfig
-          day="Sunday"
+          day="Saturday"
           value="6"
+          setSchedule={this.setSchedule}
+          toggleDay={this.toggleDay}
+        />
+        <DayConfig
+          day="Sunday"
+          value="0"
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />

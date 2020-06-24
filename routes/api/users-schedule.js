@@ -12,6 +12,8 @@ router.post("/schedule/create", authUser, (req, res) => {
     } else {
       const newSchedule = req.body.newSchedule;
       user.schedules.interval = 60;
+      var offset = new Date().getTimezoneOffset();
+      user.schedules.timezone = offset;
       user.schedules.week = newSchedule;
       user.save();
       res.send(newSchedule);
