@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getBookingPage } from "../../actions/bookActions";
 import { getSchedule } from "../../actions/scheduleActions";
 import DatePicker from "../general/DatePicker";
-import DaySchedule from "./DaySchedule";
+import DaySchedule from "./bookSchedule/DaySchedule";
 import { addMinutes } from "../../helpers/dateTime";
 
 class Book extends Component {
@@ -16,9 +16,10 @@ class Book extends Component {
   }
 
   changeDay(date) {
+    // Need to shift the date for the API request to UTC timezone
+    // To do so, we get the client's time zone, shift the date from the selector, then send the request
     const clientTimezone = new Date().getTimezoneOffset();
     var shiftedDate = addMinutes(date, clientTimezone);
-    console.log(shiftedDate);
     this.props.getSchedule(this.props.match.params.userURL, shiftedDate);
   }
 
