@@ -5,6 +5,8 @@ const app = express();
 const passport = require("passport");
 const users = require("./routes/api/users");
 const book = require("./routes/api/book");
+const schedule = require("./routes/api/users-schedule");
+
 //const events = require("./routes/api/events");
 
 // Bodyparser middleware
@@ -39,6 +41,7 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 // Routes
 app.use("/api/users", users);
+app.use("/api/users", schedule);
 app.use("/api/book", book);
 
 //app.use("/api/meetings", meetings);

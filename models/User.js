@@ -33,14 +33,14 @@ const UserSchema = new Schema({
     default: [],
   },
   schedules: {
-    type: [
+    interval: { type: Number, min: 0, max: 1439 },
+    week: [
       {
         weekday: { type: Number, min: 0, max: 6 },
         start: { type: Number, min: 0, max: 1439 },
         end: { type: Number, min: 0, max: 1439 },
       },
     ],
-    default: [],
   },
 });
 

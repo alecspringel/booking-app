@@ -9,7 +9,7 @@ export const createSchedule = (newSchedule) => (dispatch) => {
     },
   };
   axios
-    .post("/api/users/createSchedule", { newSchedule, storedToken })
+    .post("/api/users/schedule/create", { newSchedule, storedToken })
     .then((res) => {
       //dispatch(setSchedule(res.data));
       console.log("hello");
