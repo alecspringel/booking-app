@@ -17,6 +17,21 @@ export const getBookingPage = (userURL) => (dispatch) => {
     );
 };
 
+export const bookMeeting = (link, start, end) => (dispatch) => {
+  axios
+    .post("/api/book/create", { link, start, end })
+    .then((res) => {
+      console.log(res.data);
+      //dispatch(setBookingPage(res.data));
+    })
+    .catch((err) =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err,
+      })
+    );
+};
+
 export const setBookingPage = (userData) => {
   return {
     type: SET_BOOKING_PAGE,

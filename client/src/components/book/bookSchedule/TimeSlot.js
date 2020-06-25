@@ -16,7 +16,7 @@ const Slot = styled.button`
 
 const TimeSlot = (props) => {
   return (
-    <Slot>
+    <Slot onClick={() => props.bookMeeting(props.slot.start, props.slot.end)}>
       {formatTime(new Date(props.slot.start))} -{" "}
       {formatTime(new Date(props.slot.end))}
     </Slot>

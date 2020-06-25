@@ -11,7 +11,11 @@ class DaySchedule extends Component {
     return (
       <Schedule>
         {this.props.schedule.map((slot) => (
-          <TimeSlot slot={slot} />
+          <TimeSlot
+            key={slot.start}
+            slot={slot}
+            bookMeeting={this.props.bookMeeting}
+          />
         ))}
       </Schedule>
     );

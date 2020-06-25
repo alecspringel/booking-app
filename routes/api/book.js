@@ -4,6 +4,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 
+const Meeting = require("../../models/Meeting");
+const User = require("../../models/User");
+
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
@@ -21,6 +24,44 @@ router.get("/:userURL", (req, res) => {
       last: user.last,
     };
     res.send(userData);
+  });
+});
+
+router.post("/create", (req, res) => {
+  const newMeeting = new Meeting({
+    start: req.body.start,
+    end: req.body.end,
+  });
+
+  User.findOne({
+    link: req.body.link,
+    meetings: {
+      $elemMatch: {
+        $or: [
+          { start: { $gte: newMeeting.start, $lt: newMeeting.end } },
+          { end: { $gt: newMeeting.start, $lte: newMeeting.end } },
+        ],
+      },
+    },
+  }).then((user) => {
+    if (user) {
+      return res
+        .status(400)
+        .json({ error: "Meeting conflicts with existing meeting." });
+    } else {
+      User.update(
+        { link: req.body.link },
+        { $push: { meetings: { $each: [newMeeting], $sort: { start: 1 } } } },
+        {},
+        (err, newDoc) => {
+          if (err) {
+            return res.status(500).json({ error: err });
+          } else {
+            res.send(newDoc);
+          }
+        }
+      );
+    }
   });
 });
 

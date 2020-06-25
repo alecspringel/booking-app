@@ -3,13 +3,11 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const MeetingSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  createdDate: {
+  start: {
     type: Date,
-    default: Date.now,
+  },
+  end: {
+    type: Date,
   },
 });
 

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { getBookingPage } from "../../actions/bookActions";
+import { getBookingPage, bookMeeting } from "../../actions/bookActions";
 import { getSchedule } from "../../actions/scheduleActions";
 import DatePicker from "../general/DatePicker";
 import DaySchedule from "./bookSchedule/DaySchedule";
@@ -13,6 +13,7 @@ class Book extends Component {
     this.props.getSchedule(this.props.match.params.userURL, new Date());
     this.props.getBookingPage(this.props.match.params.userURL);
     this.changeDay = this.changeDay.bind(this);
+    this.bookMeeting = this.bookMeeting.bind(this);
   }
 
   changeDay(date) {
@@ -21,6 +22,11 @@ class Book extends Component {
     const clientTimezone = new Date().getTimezoneOffset();
     var shiftedDate = addMinutes(date, clientTimezone);
     this.props.getSchedule(this.props.match.params.userURL, shiftedDate);
+  }
+
+  bookMeeting(start, end) {
+    console.log(this.props.match.params.userURL, start, end);
+    this.props.bookMeeting(this.props.match.params.userURL, start, end);
   }
 
   render() {
@@ -34,7 +40,10 @@ class Book extends Component {
               {this.props.user.last}
             </h3>
             <DatePicker consumer={this.changeDay} />
-            <DaySchedule schedule={this.props.schedule} />
+            <DaySchedule
+              schedule={this.props.schedule}
+              bookMeeting={this.bookMeeting}
+            />
           </>
         ) : (
           <h1>Loading ...</h1>
@@ -49,4 +58,8 @@ const mapStateToProps = (state) => ({
   schedule: state.schedule.bookingSchedule,
 });
 
-export default connect(mapStateToProps, { getBookingPage, getSchedule })(Book);
+export default connect(mapStateToProps, {
+  getBookingPage,
+  getSchedule,
+  bookMeeting,
+})(Book);
