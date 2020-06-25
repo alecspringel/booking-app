@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { getBookingPage, bookMeeting } from "../../actions/bookActions";
@@ -7,9 +8,16 @@ import DatePicker from "../general/DatePicker";
 import DaySchedule from "./bookSchedule/DaySchedule";
 import { addMinutes } from "../../helpers/dateTime";
 
+const BookContainer = styled.div`
+  text-align: center;
+`;
+
 class Book extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      lastPicked: new Date(),
+    };
     this.props.getSchedule(this.props.match.params.userURL, new Date());
     this.props.getBookingPage(this.props.match.params.userURL);
     this.changeDay = this.changeDay.bind(this);
@@ -22,6 +30,9 @@ class Book extends Component {
     const clientTimezone = new Date().getTimezoneOffset();
     var shiftedDate = addMinutes(date, clientTimezone);
     this.props.getSchedule(this.props.match.params.userURL, shiftedDate);
+    this.setState({
+      lastPicked: date,
+    });
   }
 
   bookMeeting(start, end) {
@@ -30,25 +41,25 @@ class Book extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
-      <div>
+      <BookContainer>
         {this.props.user && this.props.schedule ? (
           <>
-            <h3>
-              Book an appointment with {this.props.user.first}{" "}
-              {this.props.user.last}
-            </h3>
+            <h2>
+              Meet with {this.props.user.first} {this.props.user.last}
+            </h2>
             <DatePicker consumer={this.changeDay} />
             <DaySchedule
               schedule={this.props.schedule}
               bookMeeting={this.bookMeeting}
+              interval={this.props.user.interval}
+              lastPicked={this.state.lastPicked}
             />
           </>
         ) : (
           <h1>Loading ...</h1>
         )}
-      </div>
+      </BookContainer>
     );
   }
 }

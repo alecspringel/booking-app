@@ -22,6 +22,7 @@ router.get("/:userURL", (req, res) => {
     const userData = {
       first: user.first,
       last: user.last,
+      interval: user.schedules.interval,
     };
     res.send(userData);
   });
@@ -33,6 +34,7 @@ router.post("/create", (req, res) => {
     end: req.body.end,
   });
 
+  // Check if any other bookings overlap first
   User.findOne({
     link: req.body.link,
     meetings: {
@@ -49,6 +51,7 @@ router.post("/create", (req, res) => {
         .status(400)
         .json({ error: "Meeting conflicts with existing meeting." });
     } else {
+      // Store meeting in ascending order within list
       User.update(
         { link: req.body.link },
         { $push: { meetings: { $each: [newMeeting], $sort: { start: 1 } } } },

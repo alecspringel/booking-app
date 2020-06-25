@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { authUser } = require("../../middleware/authUser");
 const { addMinutes } = require("../../helpers/date");
+const { checkAvailability } = require("../../helpers/schedule");
 
 router.post("/schedule/create", authUser, (req, res) => {
   // Get authorized user from decoded token (in middleware)
@@ -61,7 +62,8 @@ router.get("/schedule", authUser, (req, res) => {
         schedStart = addMinutes(schedStart, user.schedules.interval);
         schedEnd = addMinutes(schedEnd, user.schedules.interval);
       }
-      res.send(schedList);
+
+      res.send(checkAvailability(schedList, user.meetings));
     }
   });
 });

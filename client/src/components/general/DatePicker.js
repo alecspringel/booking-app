@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import ClickAway from "./ClickAway";
 
 const Header = styled.div`
@@ -17,20 +17,47 @@ const DateContainer = styled.div`
 
 const CalendarContainer = styled.div`
   text-align: center;
-  position: absolute;
-  height: 250px;
-  width: 250px;
-  background: lightgrey;
+  width: auto;
+  box-shadow: 1px 1px 4px 2px #00000026;
+  border-radius: 8px;
   top: 100%;
   z-index: 1;
+  padding: 15px;
+`;
+
+const MonthTitle = styled.h4`
+  display: inline;
 `;
 
 const DayGrid = styled.div`
+  height: 300px;
+  width: 100%;
   display: grid;
   grid-template-columns: auto auto auto auto auto auto auto;
+  grid-template-rows: auto auto auto auto auto auto auto;
 `;
 
-const Day = styled.div``;
+const Day = styled.div`
+  padding: 15px 17.5px;
+  ${(props) =>
+    props.selected &&
+    css`
+      background: #4285f4;
+      color: white;
+      border-radius: 21px;
+    `};
+`;
+
+const Weekday = styled.div`
+  padding: 9.5px 7px;
+  color: grey;
+  ${(props) =>
+    props.selected &&
+    css`
+      background: #4285f4;
+      color: white;
+    `};
+`;
 
 const Display = styled.input`
   height: 28px;
@@ -76,6 +103,7 @@ class DatePicker extends Component {
       showDropdown: false,
       display: "Today",
       currentDate: Date(),
+      lastPicked: new Date(),
     };
     this.hide = this.hide.bind(this);
     this.toggleCalendar = this.toggleCalendar.bind(this);
@@ -106,11 +134,11 @@ class DatePicker extends Component {
   }
 
   returnDate(e) {
-    e.stopPropagation();
     var selected = e.target.getAttribute("value");
     selected = new Date(selected);
-    console.log(selected);
-    console.log(this.props.consumer);
+    this.setState({
+      lastPicked: selected,
+    });
     this.props.consumer(selected);
     this.hide();
   }
@@ -118,13 +146,13 @@ class DatePicker extends Component {
   render() {
     var calendar = [
       <>
-        <Day>S</Day>
-        <Day>M</Day>
-        <Day>T</Day>
-        <Day>W</Day>
-        <Day>T</Day>
-        <Day>F</Day>
-        <Day>S</Day>
+        <Weekday>S</Weekday>
+        <Weekday>M</Weekday>
+        <Weekday>T</Weekday>
+        <Weekday>W</Weekday>
+        <Weekday>T</Weekday>
+        <Weekday>F</Weekday>
+        <Weekday>S</Weekday>
       </>,
     ];
     var today = new Date(this.state.currentDate);
@@ -135,10 +163,20 @@ class DatePicker extends Component {
 
     // Start at beginning of month
     var current = new Date(year, month, 1);
+    var lastPicked = new Date(
+      this.state.lastPicked.getFullYear(),
+      this.state.lastPicked.getMonth(),
+      this.state.lastPicked.getDate()
+    );
+    console.log(selected);
     for (var day = 1; day < numDays; day++) {
-      // calendar.push(<Day value={year+'/'+(month+1)+'/'+day} onClick={this.returnDate}>{day}</Day>)
+      var selected = false;
+      if (current.toString() === lastPicked.toString()) {
+        console.log(current.toString(), selected.toString());
+        selected = true;
+      }
       calendar.push(
-        <Day value={current} onClick={this.returnDate}>
+        <Day value={current} onClick={this.returnDate} selected={selected}>
           {day}
         </Day>
       );
@@ -146,38 +184,24 @@ class DatePicker extends Component {
     }
     return (
       <DateContainer onClick={(e) => this.toggleCalendar(e, true)}>
-        <ClickAway
-          onClickAway={this.hide}
-          contents={
-            <>
-              <Display
-                type="text"
-                placeholder={this.state.display}
-                onClick={(e) => this.toggleCalendar(e, true)}
-              />
-              {this.props.consumer && this.state.showDropdown === true && (
-                <CalendarContainer>
-                  <Header>
-                    <button
-                      onClick={() => this.shiftMonth(-1)}
-                      style={{ float: "left" }}
-                    >
-                      -
-                    </button>
-                    {monthName}
-                    <button
-                      onClick={() => this.shiftMonth(1)}
-                      style={{ float: "right" }}
-                    >
-                      +
-                    </button>
-                  </Header>
-                  <DayGrid>{calendar}</DayGrid>
-                </CalendarContainer>
-              )}
-            </>
-          }
-        />
+        <CalendarContainer>
+          <Header>
+            <button
+              onClick={() => this.shiftMonth(-1)}
+              style={{ float: "left" }}
+            >
+              -
+            </button>
+            <MonthTitle>{monthName}</MonthTitle>
+            <button
+              onClick={() => this.shiftMonth(1)}
+              style={{ float: "right" }}
+            >
+              +
+            </button>
+          </Header>
+          <DayGrid>{calendar}</DayGrid>
+        </CalendarContainer>
       </DateContainer>
     );
   }
