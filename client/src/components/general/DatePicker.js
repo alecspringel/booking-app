@@ -46,7 +46,7 @@ const Day = styled.div`
       border-radius: 21px;
     `}
   ${(props) =>
-    props.selected === null &&
+    props.onClick === null &&
     css`
       color: lightgrey;
     `}
@@ -111,32 +111,17 @@ class DatePicker extends Component {
     this.state = {
       showDropdown: false,
       display: "Today",
-      currentDate: Date(),
+      currentMonth: Date(),
       lastPicked: new Date(),
     };
-    this.hide = this.hide.bind(this);
-    this.toggleCalendar = this.toggleCalendar.bind(this);
     this.returnDate = this.returnDate.bind(this);
   }
 
-  toggleCalendar(e, show) {
-    this.setState({
-      showDropdown: show,
-    });
-    e.stopPropagation();
-  }
-
-  hide() {
-    this.setState({
-      showDropdown: false,
-    });
-  }
-
   shiftMonth(shift) {
-    var updated = new Date(this.state.currentDate);
+    var updated = new Date(this.state.currentMonth);
     updated = updated.setMonth(updated.getMonth() + shift);
     this.setState({
-      currentDate: updated,
+      currentMonth: updated,
     });
   }
 
@@ -147,22 +132,21 @@ class DatePicker extends Component {
       lastPicked: selected,
     });
     this.props.consumer(selected);
-    this.hide();
   }
 
   render() {
     var calendar = [
       <>
-        <Weekday>S</Weekday>
-        <Weekday>M</Weekday>
-        <Weekday>T</Weekday>
-        <Weekday>W</Weekday>
-        <Weekday>T</Weekday>
-        <Weekday>F</Weekday>
-        <Weekday>S</Weekday>
+        <Weekday key={"Sat"}>S</Weekday>
+        <Weekday key={"Mon"}>M</Weekday>
+        <Weekday key={"Tue"}>T</Weekday>
+        <Weekday key={"Wed"}>W</Weekday>
+        <Weekday key={"Thu"}>T</Weekday>
+        <Weekday key={"F"}>F</Weekday>
+        <Weekday key={"Sun"}>S</Weekday>
       </>,
     ];
-    var today = new Date(this.state.currentDate);
+    var today = new Date(this.state.currentMonth);
     var monthName = today.monthName();
     var month = today.getMonth();
     var year = today.getFullYear();
@@ -178,28 +162,36 @@ class DatePicker extends Component {
     var firstDayOfMonth = current.getDay();
     if (firstDayOfMonth !== 0) {
       for (var i = 0; i < firstDayOfMonth; i++) {
-        calendar.push(<Day></Day>);
+        calendar.push(<Day key={i}></Day>);
       }
     }
 
     for (var day = 1; day < numDays; day++) {
-      var selected = false;
+      // Day is == to today's date
       if (current.toString() === lastPicked.toString()) {
-        selected = true;
+        var props = {
+          selected: true,
+          onClick: this.returnDate,
+        };
+        // Day is in the past (no longer available)
       } else if (new Date(current) < new Date()) {
-        selected = null;
+        var props = {
+          selected: false,
+          onClick: null,
+        };
+        // Day beyond today's date
       } else {
-        selected = false;
+        var props = {
+          selected: false,
+          onClick: this.returnDate,
+        };
       }
-      calendar.push(
-        <Day value={current} onClick={this.returnDate} selected={selected}>
-          {day}
-        </Day>
-      );
+      props.key = props.value = current;
+      calendar.push(<Day {...props}>{day}</Day>);
       current = current.addDays(1);
     }
     return (
-      <DateContainer onClick={(e) => this.toggleCalendar(e, true)}>
+      <DateContainer>
         <CalendarContainer>
           <Header>
             <button

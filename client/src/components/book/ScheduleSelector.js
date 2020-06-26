@@ -16,9 +16,13 @@ const ScheduleSelector = (props) => {
   return (
     <ScheduleContainer>
       {props.options &&
-        props.options.map((option) => {
+        props.options.map((option, i) => {
           return (
-            <Schedule value={option.title} onClick={props.scheduleHandler}>
+            <Schedule
+              key={i}
+              value={option.title}
+              onClick={props.scheduleHandler}
+            >
               {option.title} {option.interval}
             </Schedule>
           );
