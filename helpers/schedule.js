@@ -1,3 +1,4 @@
+// Returns a list of time slots with start, end, and availability
 function checkAvailability(schedule, meetingList) {
   console.log(schedule);
   console.log(meetingList);
@@ -27,4 +28,25 @@ function checkAvailability(schedule, meetingList) {
   return schedule;
 }
 
-module.exports = { checkAvailability };
+// Finds the schedule from a user's schedule list given a title
+// NOTE: accepts "null" (string) titles (will return first list)
+function findScheduleByTitle(scheduleList, title) {
+  // User has no schedules
+  if (scheduleList.length === 0) {
+    return [];
+  }
+  // Default schedule requested (no title)
+  if (!title) {
+    console.log("scheduleList[0].week");
+    return scheduleList[0];
+  }
+  scheduleList.forEach((schedule) => {
+    if (schedule.title === title) {
+      return schedule;
+    }
+  });
+  // No schedule found
+  return [];
+}
+
+module.exports = { checkAvailability, findScheduleByTitle };

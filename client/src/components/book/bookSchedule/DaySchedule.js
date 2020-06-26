@@ -3,10 +3,15 @@ import styled from "styled-components";
 import TimeSlot from "./TimeSlot";
 
 const ScheduleContainer = styled.div`
-  margin: 20px;
+  margin: 0 20px;
+  overflow: hidden;
+  width: 200px;
 `;
 
-const Schedule = styled.div``;
+const Schedule = styled.div`
+  overflow-y: auto;
+  height: 80%;
+`;
 
 class DaySchedule extends Component {
   render() {

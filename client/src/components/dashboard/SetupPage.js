@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import TimeSelector from "../general/TimeSelector";
 import DayConfig from "../general/DayConfig";
 import { createSchedule } from "../../actions/scheduleActions";
+import IntervalSelector from "./scheduleSetup/IntervalSelector";
 
 const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6];
 
@@ -11,6 +12,8 @@ class SetupPage extends Component {
     super(props);
 
     var initState = {
+      title: "",
+      interval: 60,
       0: {},
       1: {},
       2: {},
@@ -28,9 +31,11 @@ class SetupPage extends Component {
       initState[day].end = end;
     });
     this.state = initState;
+    this.handleChange = this.handleChange.bind(this);
     this.toggleDay = this.toggleDay.bind(this);
     this.setSchedule = this.setSchedule.bind(this);
     this.saveSchedule = this.saveSchedule.bind(this);
+    this.setInterval = this.setInterval.bind(this);
   }
 
   setSchedule(weekday, startEnd, hour, minute, amPm) {
@@ -80,8 +85,18 @@ class SetupPage extends Component {
       }
     });
     if (newSchedule.length !== 0) {
-      this.props.createSchedule(newSchedule);
+      this.props.createSchedule(
+        this.state.title,
+        newSchedule,
+        this.state.interval
+      );
     }
+  }
+
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
   }
 
   toggleDay(weekday, checked) {
@@ -92,9 +107,16 @@ class SetupPage extends Component {
     });
   }
 
+  setInterval(hours, minutes) {
+    this.setState({
+      interval: hours * 60 + minutes,
+    });
+  }
+
   render() {
     return (
       <div>
+        <input type="text" name="title" onChange={this.handleChange}></input>
         <DayConfig
           day="Monday"
           value="1"
@@ -137,6 +159,7 @@ class SetupPage extends Component {
           setSchedule={this.setSchedule}
           toggleDay={this.toggleDay}
         />
+        <IntervalSelector timeHandler={this.setInterval} />
         <button onClick={this.saveSchedule}>Save</button>
       </div>
     );

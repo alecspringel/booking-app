@@ -32,17 +32,20 @@ const UserSchema = new Schema({
     type: [Meeting.Schema],
     default: [],
   },
-  schedules: {
-    interval: { type: Number, min: 0, max: 1439 },
-    timezone: Number,
-    week: [
-      {
-        weekday: { type: Number, min: 0, max: 6 },
-        start: { type: Number, min: 0, max: 1439 },
-        end: { type: Number, min: 0, max: 1439 },
-      },
-    ],
-  },
+  schedules: [
+    {
+      title: String,
+      interval: { type: Number, min: 0, max: 1439 },
+      timezone: Number,
+      week: [
+        {
+          weekday: { type: Number, min: 0, max: 6 },
+          start: { type: Number, min: 0, max: 1439 },
+          end: { type: Number, min: 0, max: 1439 },
+        },
+      ],
+    },
+  ],
 });
 
 module.exports = User = mongoose.model("users", UserSchema);

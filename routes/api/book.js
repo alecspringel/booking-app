@@ -12,17 +12,19 @@ const User = require("../../models/User");
 // @access Public
 router.get("/:userURL", (req, res) => {
   // Form validation
-  console.log("book");
-  console.log(req.params);
   User.findOne({ link: req.params.userURL }).then((user) => {
     // Check if user exists
     if (!user) {
       return res.status(404);
     }
+    var scheduleTitles = [];
+    user.schedules.forEach((schedule) => {
+      scheduleTitles.push(schedule.title);
+    });
     const userData = {
       first: user.first,
       last: user.last,
-      interval: user.schedules.interval,
+      schedules: scheduleTitles,
     };
     res.send(userData);
   });

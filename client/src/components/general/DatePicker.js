@@ -17,9 +17,8 @@ const DateContainer = styled.div`
 
 const CalendarContainer = styled.div`
   text-align: center;
+  height: 378px;
   width: auto;
-  box-shadow: 1px 1px 4px 2px #00000026;
-  border-radius: 8px;
   top: 100%;
   z-index: 1;
   padding: 15px;
@@ -40,12 +39,17 @@ const DayGrid = styled.div`
 const Day = styled.div`
   padding: 15px 17.5px;
   ${(props) =>
-    props.selected &&
+    props.selected === true &&
     css`
-      background: #4285f4;
+      background: #1a56ff;
       color: white;
       border-radius: 21px;
-    `};
+    `}
+  ${(props) =>
+    props.selected === null &&
+    css`
+      color: lightgrey;
+    `}
 `;
 
 const Weekday = styled.div`
@@ -66,6 +70,11 @@ const Display = styled.input`
   border-radius: 3px;
   border: 1px solid #c5c5c5;
   background: #f2f2f2;
+`;
+
+const Arrow = styled.img`
+  padding-top: 3px;
+  height: 19px;
 `;
 
 function daysInMonth(month, year) {
@@ -168,12 +177,22 @@ class DatePicker extends Component {
       this.state.lastPicked.getMonth(),
       this.state.lastPicked.getDate()
     );
-    console.log(selected);
+    var firstDayOfMonth = current.getDay();
+    if (firstDayOfMonth !== 0) {
+      for (var i = 0; i < firstDayOfMonth; i++) {
+        calendar.push(<Day></Day>);
+      }
+    }
+
     for (var day = 1; day < numDays; day++) {
       var selected = false;
       if (current.toString() === lastPicked.toString()) {
         console.log(current.toString(), selected.toString());
         selected = true;
+      } else if (new Date(current) < new Date()) {
+        selected = null;
+      } else {
+        selected = false;
       }
       calendar.push(
         <Day value={current} onClick={this.returnDate} selected={selected}>
@@ -190,14 +209,14 @@ class DatePicker extends Component {
               onClick={() => this.shiftMonth(-1)}
               style={{ float: "left" }}
             >
-              -
+              <Arrow src={require("../../assets/imgs/arrow-left-black.png")} />
             </button>
             <MonthTitle>{monthName}</MonthTitle>
             <button
               onClick={() => this.shiftMonth(1)}
               style={{ float: "right" }}
             >
-              +
+              <Arrow src={require("../../assets/imgs/arrow-right-black.png")} />
             </button>
           </Header>
           <DayGrid>{calendar}</DayGrid>

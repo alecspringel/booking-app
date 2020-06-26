@@ -1,7 +1,7 @@
 import axios from "axios";
 import { GET_ERRORS, SET_BOOKING_SCHEDULE } from "./types";
 
-export const createSchedule = (newSchedule) => (dispatch) => {
+export const createSchedule = (title, newSchedule, interval) => (dispatch) => {
   const token = localStorage.getItem("jwtToken");
   const storedToken = {
     headers: {
@@ -9,7 +9,12 @@ export const createSchedule = (newSchedule) => (dispatch) => {
     },
   };
   axios
-    .post("/api/users/schedule/create", { newSchedule, storedToken })
+    .post("/api/users/schedule/create", {
+      title,
+      newSchedule,
+      interval,
+      storedToken,
+    })
     .then((res) => {
       //dispatch(setSchedule(res.data));
       console.log(res.data);
@@ -22,9 +27,17 @@ export const createSchedule = (newSchedule) => (dispatch) => {
     );
 };
 
-export const getSchedule = (userURL, date) => (dispatch) => {
+export const getSchedule = (userURL, date, scheduleTitle = null) => (
+  dispatch
+) => {
   axios
-    .get("/api/users/schedule", { params: { userURL, date } })
+    .get("/api/users/schedule", {
+      params: {
+        userURL,
+        date,
+        ...(scheduleTitle === null ? {} : scheduleTitle),
+      },
+    })
     .then((res) => {
       console.log("Testing");
       console.log(res.data);
