@@ -1,0 +1,37 @@
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.fa-spin,
+.spinner {
+  -webkit-animation: spin 0.45s infinite linear;
+  animation: spin 0.45s infinite linear;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  border: 1px solid #3b73ff;
+  border-radius: 50% !important;
+  border-right-color: transparent;
+  padding: 0px;
+  padding-left: 0px;
+}

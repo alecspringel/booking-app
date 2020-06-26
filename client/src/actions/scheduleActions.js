@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS, SET_BOOKING_SCHEDULE } from "./types";
+import { GET_ERRORS, SET_BOOKING_SCHEDULE, SCHEDULE_LOADING } from "./types";
 
 export const createSchedule = (title, newSchedule, interval) => (dispatch) => {
   const token = localStorage.getItem("jwtToken");
@@ -29,6 +29,7 @@ export const createSchedule = (title, newSchedule, interval) => (dispatch) => {
 export const getSchedule = (userURL, date, scheduleTitle = null) => (
   dispatch
 ) => {
+  dispatch(scheduleLoading());
   const title = scheduleTitle === null ? undefined : scheduleTitle;
   const params = {
     userURL,
@@ -55,5 +56,11 @@ export const setSchedule = (schedule) => {
   return {
     type: SET_BOOKING_SCHEDULE,
     payload: schedule,
+  };
+};
+
+export const scheduleLoading = () => {
+  return {
+    type: SCHEDULE_LOADING,
   };
 };

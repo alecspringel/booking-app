@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import TimeSlot from "./TimeSlot";
+import Spinner from "../../general/spinner/Spinner";
 
 const ScheduleContainer = styled.div`
   margin: 0 20px;
@@ -26,13 +27,22 @@ class DaySchedule extends Component {
       <ScheduleContainer>
         <p>{this.props.lastPicked.toLocaleDateString("en-US", options)}</p>
         <Schedule>
-          {this.props.schedule.map((slot) => (
-            <TimeSlot
-              key={slot.start}
-              slot={slot}
-              bookMeeting={this.props.bookMeeting}
+          {!this.props.loading ? (
+            this.props.schedule.map((slot) => (
+              <TimeSlot
+                key={slot.start}
+                slot={slot}
+                bookMeeting={this.props.bookMeeting}
+              />
+            ))
+          ) : (
+            <Spinner
+              size={20}
+              thickness={2}
+              duration={"0.5s"}
+              color={"#3b73ff"}
             />
-          ))}
+          )}
         </Schedule>
       </ScheduleContainer>
     );

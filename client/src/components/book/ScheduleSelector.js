@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Spinner from "../general/spinner/Spinner";
 
 const ScheduleContainer = styled.div`
   display: inline-block;

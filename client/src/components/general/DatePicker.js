@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import styled, { css } from "styled-components";
 import ClickAway from "./ClickAway";
-
-function daysInMonth(month, year) {
-  return new Date(year, month, 0).getDate();
-}
+import { daysInMonth } from "../../helpers/dateTime";
 
 Date.prototype.monthName = function () {
   const month = this.getMonth();

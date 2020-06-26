@@ -8,6 +8,7 @@ import DatePicker from "../general/DatePicker";
 import DaySchedule from "./bookSchedule/DaySchedule";
 import { addMinutes } from "../../helpers/dateTime";
 import ScheduleSelector from "./ScheduleSelector";
+import Spinner from "../general/spinner/Spinner";
 
 const BookContainer = styled.div`
   text-align: center;
@@ -36,6 +37,7 @@ class Book extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       lastPicked: new Date(),
       schedule: "",
     };
@@ -82,7 +84,7 @@ class Book extends Component {
   render() {
     return (
       <BookContainer>
-        {this.props.user && this.props.user.first && this.props.user.last ? (
+        {this.props.user && this.props.user.first && this.props.user.last && (
           <div>
             <h2>
               Meet with {this.props.user.first} {this.props.user.last}
@@ -98,20 +100,22 @@ class Book extends Component {
               <>
                 {this.props.schedule && (
                   <FlexContainer>
-                    <DatePicker consumer={this.changeDay} />
+                    <DatePicker
+                      consumer={this.changeDay}
+                      loading={this.props.scheduleLoading}
+                    />
                     <DaySchedule
                       schedule={this.props.schedule}
                       bookMeeting={this.bookMeeting}
                       interval={this.props.user.interval}
                       lastPicked={this.state.lastPicked}
+                      loading={this.props.scheduleLoading}
                     />
                   </FlexContainer>
                 )}
               </>
             )}
           </div>
-        ) : (
-          <h1>Loading ...</h1>
         )}
       </BookContainer>
     );
@@ -121,6 +125,7 @@ class Book extends Component {
 const mapStateToProps = (state) => ({
   user: state.book.user,
   schedule: state.schedule.bookingSchedule,
+  scheduleLoading: state.schedule.loading,
 });
 
 export default connect(mapStateToProps, {
