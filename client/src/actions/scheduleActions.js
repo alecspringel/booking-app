@@ -17,7 +17,6 @@ export const createSchedule = (title, newSchedule, interval) => (dispatch) => {
     })
     .then((res) => {
       //dispatch(setSchedule(res.data));
-      console.log(res.data);
     })
     .catch((err) =>
       dispatch({
@@ -30,17 +29,18 @@ export const createSchedule = (title, newSchedule, interval) => (dispatch) => {
 export const getSchedule = (userURL, date, scheduleTitle = null) => (
   dispatch
 ) => {
+  const title = scheduleTitle === null ? undefined : scheduleTitle;
+  const params = {
+    userURL,
+    date,
+    scheduleTitle: title,
+    timezone: new Date().getTimezoneOffset(),
+  };
   axios
     .get("/api/users/schedule", {
-      params: {
-        userURL,
-        date,
-        ...(scheduleTitle === null ? {} : scheduleTitle),
-      },
+      params,
     })
     .then((res) => {
-      console.log("Testing");
-      console.log(res.data);
       dispatch(setSchedule(res.data));
     })
     .catch((err) =>

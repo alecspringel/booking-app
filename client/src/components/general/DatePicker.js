@@ -123,7 +123,6 @@ class DatePicker extends Component {
     this.setState({
       showDropdown: show,
     });
-    console.log("toggle");
     e.stopPropagation();
   }
 
@@ -136,7 +135,6 @@ class DatePicker extends Component {
   shiftMonth(shift) {
     var updated = new Date(this.state.currentDate);
     updated = updated.setMonth(updated.getMonth() + shift);
-    console.log(updated);
     this.setState({
       currentDate: updated,
     });
@@ -187,7 +185,6 @@ class DatePicker extends Component {
     for (var day = 1; day < numDays; day++) {
       var selected = false;
       if (current.toString() === lastPicked.toString()) {
-        console.log(current.toString(), selected.toString());
         selected = true;
       } else if (new Date(current) < new Date()) {
         selected = null;

@@ -45,16 +45,19 @@ class Book extends Component {
     this.scheduleHandler = this.scheduleHandler.bind(this);
   }
 
+  // Set the title of the schedule that the user selects
   scheduleHandler(e) {
-    this.setState({
-      schedule: e.target.value,
-    });
-    this.props.getSchedule(
-      this.props.match.params.userURL,
-      new Date(),
-      this.state.schedule
+    this.setState(
+      {
+        schedule: e.target.value,
+      },
+      () =>
+        this.props.getSchedule(
+          this.props.match.params.userURL,
+          new Date(),
+          this.state.schedule
+        )
     );
-    console.log(this.state);
   }
 
   changeDay(date) {
@@ -62,22 +65,24 @@ class Book extends Component {
     // To do so, we get the client's time zone, shift the date from the selector, then send the request
     const clientTimezone = new Date().getTimezoneOffset();
     var shiftedDate = addMinutes(date, clientTimezone);
-    this.props.getSchedule(this.props.match.params.userURL, shiftedDate);
+    this.props.getSchedule(
+      this.props.match.params.userURL,
+      shiftedDate,
+      this.state.schedule
+    );
     this.setState({
       lastPicked: date,
     });
   }
 
   bookMeeting(start, end) {
-    console.log(this.props.match.params.userURL, start, end);
     this.props.bookMeeting(this.props.match.params.userURL, start, end);
   }
 
   render() {
-    console.log(this.props.user.schedules);
     return (
       <BookContainer>
-        {this.props.user ? (
+        {this.props.user && this.props.user.first && this.props.user.last ? (
           <div>
             <h2>
               Meet with {this.props.user.first} {this.props.user.last}
@@ -88,9 +93,6 @@ class Book extends Component {
                   options={this.props.user.schedules}
                   scheduleHandler={this.scheduleHandler}
                 />
-                <div>
-                  <button>Schedule a Time</button>
-                </div>
               </Container>
             ) : (
               <>

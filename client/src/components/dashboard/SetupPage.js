@@ -39,7 +39,6 @@ class SetupPage extends Component {
   }
 
   setSchedule(weekday, startEnd, hour, minute, amPm) {
-    console.log(weekday, startEnd, hour, minute, amPm);
     var update = null;
     //Convert time into minutes past midnight
     var totalMin = hour * 60 + minute;
@@ -68,7 +67,6 @@ class SetupPage extends Component {
     this.setState({
       [weekday]: update,
     });
-    console.log(this.state);
   }
 
   saveSchedule() {

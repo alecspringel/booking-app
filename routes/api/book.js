@@ -19,7 +19,11 @@ router.get("/:userURL", (req, res) => {
     }
     var scheduleTitles = [];
     user.schedules.forEach((schedule) => {
-      scheduleTitles.push(schedule.title);
+      const scheduleItem = {
+        title: schedule.title,
+        interval: schedule.interval,
+      };
+      scheduleTitles.push(scheduleItem);
     });
     const userData = {
       first: user.first,

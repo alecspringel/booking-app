@@ -1,19 +1,29 @@
 import React from "react";
 import styled from "styled-components";
 
-const Selector = styled.select`
-  width: 80px;
+const ScheduleContainer = styled.div`
+  display: inline-block;
+  width: 90%;
+`;
+
+const Schedule = styled.button`
+  width: 100%;
   height: 30px;
+  display: block;
 `;
 
 const ScheduleSelector = (props) => {
   return (
-    <div>
+    <ScheduleContainer>
       {props.options &&
         props.options.map((option) => {
-          return <button value={option}>{option}</button>;
+          return (
+            <Schedule value={option.title} onClick={props.scheduleHandler}>
+              {option.title} {option.interval}
+            </Schedule>
+          );
         })}
-    </div>
+    </ScheduleContainer>
   );
 };
 

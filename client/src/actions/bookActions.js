@@ -6,7 +6,6 @@ export const getBookingPage = (userURL) => (dispatch) => {
   axios
     .get("/api/book/" + userURL)
     .then((res) => {
-      console.log(res.data);
       dispatch(setBookingPage(res.data));
     })
     .catch((err) =>
@@ -21,7 +20,6 @@ export const bookMeeting = (link, start, end) => (dispatch) => {
   axios
     .post("/api/book/create", { link, start, end })
     .then((res) => {
-      console.log(res.data);
       //dispatch(setBookingPage(res.data));
     })
     .catch((err) =>

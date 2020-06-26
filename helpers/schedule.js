@@ -1,8 +1,6 @@
+const { addMinutes } = require("./date");
 // Returns a list of time slots with start, end, and availability
 function checkAvailability(schedule, meetingList) {
-  console.log(schedule);
-  console.log(meetingList);
-
   // Separate scheduled meetings that fall between the start of the first time slot, and end of last time slot
 
   var overlap = meetingList.filter(
@@ -12,7 +10,6 @@ function checkAvailability(schedule, meetingList) {
       (meeting.end > schedule[0].start &&
         meeting.end <= schedule[schedule.length - 1].end)
   );
-  console.log("overlap:", overlap);
   schedule.forEach((sched) => {
     // If the meeting overlaps with a schedule slot, set the slot availability to false
     overlap.forEach((meeting) => {
@@ -20,7 +17,6 @@ function checkAvailability(schedule, meetingList) {
         (sched.start >= meeting.start && sched.start < meeting.end) ||
         (sched.end > meeting.start && sched.end <= meeting.end)
       ) {
-        console.log("hit");
         sched.available = false;
       }
     });
@@ -37,16 +33,41 @@ function findScheduleByTitle(scheduleList, title) {
   }
   // Default schedule requested (no title)
   if (!title) {
-    console.log("scheduleList[0].week");
-    return scheduleList[0];
+    return scheduleList[0].week;
+  } else {
+    title = title.replace("+", " ");
   }
   scheduleList.forEach((schedule) => {
     if (schedule.title === title) {
-      return schedule;
+      var selected = [];
+      return selected;
     }
   });
   // No schedule found
   return [];
 }
 
-module.exports = { checkAvailability, findScheduleByTitle };
+// Returns list of possible time slots
+function getSlots(date, begin, finish, interval) {
+  // Process meeting slots
+  const start = addMinutes(date, begin);
+  const end = addMinutes(date, finish);
+
+  var schedList = [];
+  var schedStart = start;
+  var schedEnd = addMinutes(start, interval);
+
+  while (schedEnd <= end) {
+    const slot = {
+      available: true,
+      start: schedStart,
+      end: schedEnd,
+    };
+    schedList.push(slot);
+    schedStart = addMinutes(schedStart, interval);
+    schedEnd = addMinutes(schedEnd, interval);
+  }
+  return schedList;
+}
+
+module.exports = { checkAvailability, findScheduleByTitle, getSlots };
