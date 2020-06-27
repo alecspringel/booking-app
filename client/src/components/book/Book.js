@@ -133,6 +133,7 @@ class Book extends Component {
                       consumer={this.changeDay}
                       changeMonth={this.changeMonth}
                       loading={this.props.scheduleLoading}
+                      lastPicked={this.state.lastPicked}
                     />
                     <DaySchedule
                       schedule={this.state.selectedSchedule}

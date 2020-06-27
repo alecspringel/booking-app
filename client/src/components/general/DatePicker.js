@@ -64,9 +64,6 @@ export default class DatePicker extends Component {
   returnDate(e) {
     var selected = e.target.getAttribute("value");
     selected = new Date(selected);
-    this.setState({
-      lastPicked: selected,
-    });
     this.props.consumer(selected);
   }
 
@@ -114,7 +111,7 @@ export default class DatePicker extends Component {
         };
       }
       props.key = props.value = dayIterator;
-      props.lastPicked = this.state.lastPicked;
+      props.lastPicked = this.props.lastPicked;
       calendar.push(<Day {...props}>{day}</Day>);
       dayIterator = dayIterator.addDays(1);
     }
