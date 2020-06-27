@@ -25,24 +25,21 @@ class DaySchedule extends Component {
 
     return (
       <ScheduleContainer>
-        <p>{this.props.lastPicked.toLocaleDateString("en-US", options)}</p>
+        <p>
+          {this.props.lastPicked
+            ? this.props.lastPicked.toLocaleDateString("en-US", options)
+            : "Select a date"}
+        </p>
         <Schedule>
-          {!this.props.loading ? (
+          {!this.props.loading &&
+            this.props.lastPicked &&
             this.props.schedule.map((slot) => (
               <TimeSlot
                 key={slot.start}
                 slot={slot}
                 bookMeeting={this.props.bookMeeting}
               />
-            ))
-          ) : (
-            <Spinner
-              size={20}
-              thickness={2}
-              duration={"0.5s"}
-              color={"#3b73ff"}
-            />
-          )}
+            ))}
         </Schedule>
       </ScheduleContainer>
     );

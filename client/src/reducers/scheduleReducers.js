@@ -1,7 +1,7 @@
 import { SET_BOOKING_SCHEDULE, SCHEDULE_LOADING } from "../actions/types";
 
 const initialState = {
-  bookingSchedule: null,
+  monthSchedule: null,
 };
 
 export default function (state = initialState, action) {
@@ -9,7 +9,7 @@ export default function (state = initialState, action) {
     case SET_BOOKING_SCHEDULE:
       return {
         ...state,
-        bookingSchedule: action.payload,
+        monthSchedule: action.payload,
         loading: false,
       };
     case SCHEDULE_LOADING:

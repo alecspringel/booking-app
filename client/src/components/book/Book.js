@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, nextProps } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { getBookingPage, bookMeeting } from "../../actions/bookActions";
-import { getSchedule } from "../../actions/scheduleActions";
+import { getMonthSchedule } from "../../actions/scheduleActions";
 import DatePicker from "../general/DatePicker";
 import DaySchedule from "./bookSchedule/DaySchedule";
 import { addMinutes } from "../../helpers/dateTime";
@@ -38,40 +38,69 @@ class Book extends Component {
     super(props);
     this.state = {
       loading: false,
-      lastPicked: new Date(),
-      schedule: "",
+      lastPicked: null,
+      scheduleTitle: "",
+      selectedSchedule: [],
     };
     this.props.getBookingPage(this.props.match.params.userURL);
+    this.changeMonth = this.changeMonth.bind(this);
     this.changeDay = this.changeDay.bind(this);
     this.bookMeeting = this.bookMeeting.bind(this);
     this.scheduleHandler = this.scheduleHandler.bind(this);
+    this.setSelectedSchedule = this.setSelectedSchedule.bind(this);
+  }
+
+  setSelectedSchedule(date) {
+    date.setHours(0, 0, 0, 0);
+    var selected = this.props.monthSchedule.find(
+      (obj) => obj.date.toString() === date.toISOString()
+    );
+
+    //If no schedule is found, send empty list
+    if (selected === undefined) {
+      this.setState({
+        selectedSchedule: [],
+      });
+    } else {
+      this.setState({
+        selectedSchedule: selected.schedule,
+      });
+    }
   }
 
   // Set the title of the schedule that the user selects
   scheduleHandler(e) {
+    const clientTimezone = new Date().getTimezoneOffset();
+    var shiftedDate = addMinutes(new Date(), clientTimezone);
     this.setState(
       {
-        schedule: e.target.value,
+        scheduleTitle: e.target.value,
       },
-      () =>
-        this.props.getSchedule(
+      () => {
+        this.props.getMonthSchedule(
           this.props.match.params.userURL,
-          new Date(),
-          this.state.schedule
-        )
+          shiftedDate,
+          this.state.scheduleTitle
+        );
+      }
     );
+  }
+
+  changeMonth(date) {
+    this.props.getMonthSchedule(
+      this.props.match.params.userURL,
+      new Date(date),
+      this.state.scheduleTitle
+    );
+    this.setState({
+      lastPicked: null,
+    });
   }
 
   changeDay(date) {
     // Need to shift the date for the API request to UTC timezone
     // To do so, we get the client's time zone, shift the date from the selector, then send the request
-    const clientTimezone = new Date().getTimezoneOffset();
-    var shiftedDate = addMinutes(date, clientTimezone);
-    this.props.getSchedule(
-      this.props.match.params.userURL,
-      shiftedDate,
-      this.state.schedule
-    );
+    this.setSelectedSchedule(date);
     this.setState({
       lastPicked: date,
     });
@@ -89,7 +118,7 @@ class Book extends Component {
             <h2>
               Meet with {this.props.user.first} {this.props.user.last}
             </h2>
-            {this.state.schedule === "" ? (
+            {this.state.scheduleTitle === "" ? (
               <Container>
                 <ScheduleSelector
                   options={this.props.user.schedules}
@@ -98,14 +127,15 @@ class Book extends Component {
               </Container>
             ) : (
               <>
-                {this.props.schedule && (
+                {this.props.monthSchedule && (
                   <FlexContainer>
                     <DatePicker
                       consumer={this.changeDay}
+                      changeMonth={this.changeMonth}
                       loading={this.props.scheduleLoading}
                     />
                     <DaySchedule
-                      schedule={this.props.schedule}
+                      schedule={this.state.selectedSchedule}
                       bookMeeting={this.bookMeeting}
                       interval={this.props.user.interval}
                       lastPicked={this.state.lastPicked}
@@ -124,12 +154,12 @@ class Book extends Component {
 
 const mapStateToProps = (state) => ({
   user: state.book.user,
-  schedule: state.schedule.bookingSchedule,
+  monthSchedule: state.schedule.monthSchedule,
   scheduleLoading: state.schedule.loading,
 });
 
 export default connect(mapStateToProps, {
   getBookingPage,
-  getSchedule,
+  getMonthSchedule,
   bookMeeting,
 })(Book);

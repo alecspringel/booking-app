@@ -34,22 +34,31 @@ export default class DatePicker extends Component {
     this.state = {
       showDropdown: false,
       display: "Today",
-      currentMonth: new Date(),
-      lastPicked: new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      ),
+      currentMonth: new Date(today.getFullYear(), today.getMonth(), 1),
+      lastPicked: null,
     };
     this.returnDate = this.returnDate.bind(this);
   }
 
   shiftMonth(shift) {
-    var updated = this.state.currentMonth;
-    updated = updated.setMonth(updated.getMonth() + shift);
-    this.setState({
-      currentMonth: new Date(updated),
-    });
+    var today = new Date();
+    var updated = new Date(this.state.currentMonth);
+    var copy = new Date(updated.setMonth(updated.getMonth() + shift));
+    console.log(updated);
+    // Dont show dates before today
+    if (
+      new Date(copy.getFullYear(), copy.getMonth()) <
+      new Date(today.getFullYear(), today.getMonth())
+    ) {
+      console.log("lower");
+      return;
+    } else {
+      copy.setHours(0, 0, 0, 0);
+      this.setState({
+        currentMonth: new Date(copy.getFullYear(), copy.getMonth()),
+      });
+      this.props.changeMonth(copy);
+    }
   }
 
   returnDate(e) {

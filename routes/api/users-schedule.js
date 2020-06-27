@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { authUser } = require("../../middleware/authUser");
-const { addMinutes } = require("../../helpers/date");
+const { Date, addMinutes, daysInMonth } = require("../../helpers/date");
 const { checkAvailability, getSlots } = require("../../helpers/schedule");
 const { validateNewSchedule } = require("../../validation/schedule");
 
@@ -32,7 +32,7 @@ router.post("/schedule/create", authUser, (req, res) => {
 });
 
 // + char should not be allowed in title (they are sent in requests as spaces)
-router.get("/schedule", authUser, (req, res) => {
+router.get("/schedule", (req, res) => {
   // Get authorized user from decoded token (in middleware)
   const userURL = req.query.userURL;
   User.findOne({ link: userURL }).then((user) => {
@@ -77,6 +77,80 @@ router.get("/schedule", authUser, (req, res) => {
           user.meetings
         )
       );
+    }
+  });
+});
+
+router.get("/schedule/month", (req, res) => {
+  // Get authorized user from decoded token (in middleware)
+  const userURL = req.query.userURL;
+  User.findOne({ link: userURL }).then((user) => {
+    if (!user) {
+      return res.status(404).json({ email: "User does not exist" });
+    } else {
+      console.log(req.query.date);
+      var monthSchedule = [];
+
+      // Set date to first of the month to return the entire month
+      var date = new Date(req.query.date);
+      date = new Date(date.getFullYear(), date.getMonth(), 1);
+
+      date.setHours(0, 0, 0, 0);
+      console.log("check");
+      var month = date.getMonth();
+      //Run until date gets first of next month
+      while (date.getMonth() === month) {
+        console.log("iteration");
+        var userSchedules = user.schedules;
+        var selected = [];
+        // If user has no schedules, process empty list
+        if (userSchedules.length === 0) {
+        }
+        // Default schedule requested (no title)
+        else if (!req.query.scheduleTitle) {
+          selected = userSchedules[0];
+        }
+        // If a schedule title is specified in the request, set the schedule -> selected
+        else {
+          title = req.query.scheduleTitle.replace("+", " ");
+          userSchedules.forEach((schedule) => {
+            if (schedule.title === title) {
+              selected = schedule;
+            }
+          });
+        }
+
+        var dateWeekday = date.getDay();
+        var schedule = selected.week.filter((day) => {
+          return day.weekday === dateWeekday;
+        });
+
+        var day = {};
+        // If user is not taking meetings, send empty list
+        if (schedule.length === 0) {
+          day.date = date;
+          day.schedule = [];
+        } else {
+          var daySchedule = checkAvailability(
+            getSlots(
+              date,
+              schedule[0].start,
+              schedule[0].end,
+              selected.interval
+            ),
+            user.meetings
+          );
+          day.date = date;
+          day.schedule = daySchedule;
+        }
+
+        monthSchedule.push(day);
+        //console.log(monthSchedule);
+        date = date.addDays(1);
+      }
+      console.log(monthSchedule);
+
+      res.send(monthSchedule);
     }
   });
 });
