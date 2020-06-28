@@ -21,7 +21,6 @@ router.get("/:userURL", (req, res) => {
     user.schedules.forEach((schedule) => {
       const scheduleItem = {
         title: schedule.title,
-        interval: schedule.interval,
       };
       scheduleTitles.push(scheduleItem);
     });

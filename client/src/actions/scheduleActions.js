@@ -2,19 +2,18 @@ import axios from "axios";
 import { GET_ERRORS, SET_BOOKING_SCHEDULE, SCHEDULE_LOADING } from "./types";
 import { daysInMonth, addDays } from "../helpers/dateTime";
 
-export const createSchedule = (title, newSchedule, interval) => (dispatch) => {
+export const createSchedule = (title, slots) => (dispatch) => {
   const token = localStorage.getItem("jwtToken");
   const storedToken = {
     headers: {
       Authorization: token,
     },
   };
+  console.log(slots);
   axios
     .post("/api/users/schedule/create", {
       title,
-      newSchedule,
-      interval,
-      storedToken,
+      slots,
     })
     .then((res) => {
       //dispatch(setSchedule(res.data));
@@ -27,16 +26,15 @@ export const createSchedule = (title, newSchedule, interval) => (dispatch) => {
     );
 };
 
-export const getSchedule = (userURL, date, scheduleTitle = null) => (
+export const getSchedule = (userURL, scheduleTitle, start, end) => (
   dispatch
 ) => {
   dispatch(scheduleLoading());
-  const title = scheduleTitle === null ? undefined : scheduleTitle;
   const params = {
     userURL,
-    date,
-    scheduleTitle: title,
-    timezone: new Date().getTimezoneOffset(),
+    scheduleTitle,
+    start,
+    end,
   };
   axios
     .get("/api/users/schedule", {

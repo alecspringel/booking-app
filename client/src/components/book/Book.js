@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { getBookingPage, bookMeeting } from "../../actions/bookActions";
-import { getMonthSchedule } from "../../actions/scheduleActions";
+import { getMonthSchedule, getSchedule } from "../../actions/scheduleActions";
 import DatePicker from "../general/DatePicker";
 import DaySchedule from "./bookSchedule/DaySchedule";
-import { addMinutes } from "../../helpers/dateTime";
+import { addMinutes, firstOfMonthUTC } from "../../helpers/dateTime";
 import ScheduleSelector from "./ScheduleSelector";
 import Spinner from "../general/spinner/Spinner";
+import moment from "moment";
+import { createTimes } from "../../helpers/schedule";
 
 const BookContainer = styled.div`
   text-align: center;
@@ -37,12 +39,14 @@ class Book extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      offset: new Date().getTimezoneOffset(),
       loading: false,
       lastPicked: null,
       scheduleTitle: "",
       selectedSchedule: [],
     };
     this.props.getBookingPage(this.props.match.params.userURL);
+    this.changeTimeZone = this.changeTimeZone.bind(this);
     this.changeMonth = this.changeMonth.bind(this);
     this.changeDay = this.changeDay.bind(this);
     this.bookMeeting = this.bookMeeting.bind(this);
@@ -50,59 +54,93 @@ class Book extends Component {
     this.setSelectedSchedule = this.setSelectedSchedule.bind(this);
   }
 
+  // Takes UTC date from picker, then finds all slots for that time frame
+  // pass offset as param
   setSelectedSchedule(date) {
-    date.setHours(0, 0, 0, 0);
-    var selected = this.props.monthSchedule.find(
-      (obj) => obj.date.toString() === date.toISOString()
-    );
+    var shiftedDate = addMinutes(date, this.state.offset);
+    console.log(this.props.monthSchedule);
+    var validSlots = this.props.monthSchedule.filter((slot) => {
+      console.log(shiftedDate, addMinutes(shiftedDate, 1440));
+      if (
+        new Date(slot.start) > shiftedDate &&
+        new Date(slot.start) < addMinutes(shiftedDate, 1440)
+      ) {
+        return slot;
+      }
+    });
+    console.log(validSlots);
 
-    //If no schedule is found, send empty list
-    if (selected === undefined) {
+    // No slots were found
+    if (validSlots === undefined) {
       this.setState({
         selectedSchedule: [],
       });
     } else {
       this.setState({
-        selectedSchedule: selected.schedule,
+        selectedSchedule: createTimes(validSlots, this.state.offset),
       });
     }
   }
 
   // Set the title of the schedule that the user selects
   scheduleHandler(e) {
-    const clientTimezone = new Date().getTimezoneOffset();
-    var shiftedDate = addMinutes(new Date(), clientTimezone);
+    var today = new Date();
+    var thisMonth = today.getMonth();
+    var thisYear = today.getFullYear();
+
+    // Gets all slots from the 1st to end of today's month (converted timezone)
+    var start = firstOfMonthUTC(thisYear, thisMonth);
+    start = addMinutes(start, this.state.offset);
+
+    var end = firstOfMonthUTC(thisYear, thisMonth + 1);
+    end = addMinutes(end, this.state.offset);
+
     this.setState(
       {
         scheduleTitle: e.target.value,
       },
       () => {
-        this.props.getMonthSchedule(
+        this.props.getSchedule(
           this.props.match.params.userURL,
-          shiftedDate,
-          this.state.scheduleTitle
+          this.state.scheduleTitle,
+          start,
+          end
         );
       }
     );
   }
 
-  changeMonth(date) {
-    this.props.getMonthSchedule(
+  changeMonth(year, month) {
+    var start = firstOfMonthUTC(year, month);
+    start = addMinutes(start, this.state.offset);
+
+    var end = firstOfMonthUTC(year, month + 1);
+    end = addMinutes(end, this.state.offset);
+
+    this.props.getSchedule(
       this.props.match.params.userURL,
-      new Date(date),
-      this.state.scheduleTitle
+      this.state.scheduleTitle,
+      start,
+      end
     );
+
     this.setState({
       lastPicked: null,
     });
   }
 
   changeDay(date) {
-    // Need to shift the date for the API request to UTC timezone
-    // To do so, we get the client's time zone, shift the date from the selector, then send the request
     this.setSelectedSchedule(date);
+
     this.setState({
       lastPicked: date,
+    });
+  }
+
+  changeTimeZone(e) {
+    this.setState({
+      offset: e.target.value,
+      lastPicked: null,
     });
   }
 
@@ -132,6 +170,7 @@ class Book extends Component {
                     <DatePicker
                       consumer={this.changeDay}
                       changeMonth={this.changeMonth}
+                      changeTimeZone={this.changeTimeZone}
                       loading={this.props.scheduleLoading}
                       lastPicked={this.state.lastPicked}
                     />
@@ -162,5 +201,6 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getBookingPage,
   getMonthSchedule,
+  getSchedule,
   bookMeeting,
 })(Book);

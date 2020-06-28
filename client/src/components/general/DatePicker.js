@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import styled, { css } from "styled-components";
 import ClickAway from "./ClickAway";
-import { daysInMonth } from "../../helpers/dateTime";
+import { daysInMonth, addMinutes } from "../../helpers/dateTime";
+import TimeZoneSelector from "./TimeZoneSelector";
 
 Date.prototype.monthName = function () {
   const month = this.getMonth();
@@ -32,6 +33,7 @@ export default class DatePicker extends Component {
     super(props);
     const today = new Date();
     this.state = {
+      offset: new Date().getTimezoneOffset(),
       showDropdown: false,
       display: "Today",
       currentMonth: new Date(today.getFullYear(), today.getMonth(), 1),
@@ -57,13 +59,16 @@ export default class DatePicker extends Component {
       this.setState({
         currentMonth: new Date(copy.getFullYear(), copy.getMonth()),
       });
-      this.props.changeMonth(copy);
+      this.props.changeMonth(copy.getFullYear(), copy.getMonth());
     }
   }
 
   returnDate(e) {
     var selected = e.target.getAttribute("value");
-    selected = new Date(selected);
+    selected = addMinutes(
+      new Date(selected),
+      new Date().getTimezoneOffset() * -1
+    );
     this.props.consumer(selected);
   }
 
@@ -119,18 +124,22 @@ export default class DatePicker extends Component {
       <DateContainer>
         <CalendarContainer>
           <Header>
-            <button
-              onClick={() => this.shiftMonth(-1)}
+            <TimeZoneSelector
+              onChange={this.props.changeTimeZone}
               style={{ float: "left" }}
-            >
-              <Arrow src={require("../../assets/imgs/arrow-left-black.png")} />
-            </button>
+            />
             <MonthTitle>{monthName}</MonthTitle>
             <button
               onClick={() => this.shiftMonth(1)}
               style={{ float: "right" }}
             >
               <Arrow src={require("../../assets/imgs/arrow-right-black.png")} />
+            </button>
+            <button
+              onClick={() => this.shiftMonth(-1)}
+              style={{ float: "right" }}
+            >
+              <Arrow src={require("../../assets/imgs/arrow-left-black.png")} />
             </button>
           </Header>
           <DayGrid>{calendar}</DayGrid>

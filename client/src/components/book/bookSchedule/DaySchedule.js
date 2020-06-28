@@ -21,15 +21,19 @@ class DaySchedule extends Component {
       year: "numeric",
       month: "long",
       day: "numeric",
+      timezone: "UTC",
     };
+
+    if (this.props.lastPicked !== null) {
+      var lastPicked = this.props.lastPicked;
+      lastPicked = lastPicked.toUTCString();
+      // Remove last 13 characters (the time)
+      lastPicked = lastPicked.substring(0, lastPicked.length - 13);
+    }
 
     return (
       <ScheduleContainer>
-        <p>
-          {this.props.lastPicked
-            ? this.props.lastPicked.toLocaleDateString("en-US", options)
-            : "Select a date"}
-        </p>
+        <p>{this.props.lastPicked ? lastPicked : "Select a date"}</p>
         <Schedule>
           {!this.props.loading &&
             this.props.lastPicked &&

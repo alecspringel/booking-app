@@ -35,13 +35,11 @@ const UserSchema = new Schema({
   schedules: [
     {
       title: String,
-      interval: { type: Number, min: 0, max: 1439 },
-      timezone: Number,
-      week: [
+      slots: [
         {
-          weekday: { type: Number, min: 0, max: 6 },
-          start: { type: Number, min: 0, max: 1439 },
-          end: { type: Number, min: 0, max: 1439 },
+          available: Boolean,
+          start: Date,
+          end: Date,
         },
       ],
     },

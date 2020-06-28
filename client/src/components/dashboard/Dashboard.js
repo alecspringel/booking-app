@@ -5,6 +5,7 @@ import { logoutUser } from "../../actions/authActions";
 import MeetingList from "./MeetingList";
 import EventForm from "./EventForm";
 import SetupPage from "./SetupPage";
+import ScheduleMaker from "./ScheduleMaker";
 
 class Dashboard extends Component {
   onLogoutClick = (e) => {
@@ -21,6 +22,7 @@ class Dashboard extends Component {
             <h4>
               <b>Hey there,</b> {user.first.split(" ")[0]}
               <SetupPage />
+              <ScheduleMaker />
             </h4>
 
             <button

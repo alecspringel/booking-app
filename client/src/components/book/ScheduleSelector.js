@@ -24,7 +24,7 @@ const ScheduleSelector = (props) => {
               value={option.title}
               onClick={props.scheduleHandler}
             >
-              {option.title} {option.interval}
+              {option.title}
             </Schedule>
           );
         })}
