@@ -35,7 +35,7 @@ const TimeSlot = (props) => {
       onClick={() => props.bookMeeting(props.slot.start, props.slot.end)}
       available={props.slot.available}
     >
-      {props.slot.start}
+      {props.slot.startTime}
     </Slot>
   );
 };

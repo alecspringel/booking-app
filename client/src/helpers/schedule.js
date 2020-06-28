@@ -10,10 +10,18 @@ export function createTimes(validSlots, offset) {
     console.log("test", new Date(slot.start).toUTCString());
     const time = {
       available: slot.available,
-      start: formatTime(
+      start: addMinutes(
+        addMinutes(new Date(slot.start), defaultOffset),
+        -1 * offset
+      ),
+      end: addMinutes(
+        addMinutes(new Date(slot.end), defaultOffset),
+        -1 * offset
+      ),
+      startTime: formatTime(
         addMinutes(addMinutes(new Date(slot.start), defaultOffset), -1 * offset)
       ),
-      end: formatTime(
+      endTime: formatTime(
         addMinutes(addMinutes(new Date(slot.end), defaultOffset), -1 * offset)
       ),
     };

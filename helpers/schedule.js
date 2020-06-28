@@ -1,8 +1,10 @@
 const { addMinutes } = require("./date");
 // Returns a list of time slots with start, end, and availability
 function checkAvailability(schedule, meetingList) {
+  if (schedule.length === 0) {
+    return [];
+  }
   // Separate scheduled meetings that fall between the start of the first time slot, and end of last time slot
-
   var overlap = meetingList.filter(
     (meeting) =>
       (meeting.start >= schedule[0].start &&
