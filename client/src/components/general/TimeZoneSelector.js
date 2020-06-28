@@ -1,17 +1,31 @@
-import React, { Component } from "react";
+import React from "react";
 
-export default class TimeZoneSelector extends Component {
-  render() {
-    return (
-      <select {...this.props}>
-        <option disabled>United States</option>
-        <option value={540}>HST - Honolulu</option>
-        <option value={480}>AKDT - Anchorage</option>
-        <option value={420}>PDT - Los Angeles</option>
-        <option value={360}>MDT - Denver</option>
-        <option value={300}>CDT - Chicago</option>
-        <option value={240}>EDT - New York</option>
-      </select>
+const timeZones = [
+  { short: "HST", location: "Honolulu", offset: 540 },
+  { short: "AKDT", location: "Anchorage", offset: 480 },
+  { short: "PDT", location: "Los Angeles", offset: 420 },
+  { short: "MDT", location: "Denver", offset: 360 },
+  { short: "CDT", location: "Chicago", offset: 300 },
+  { short: "EDT", location: "New York", offset: 240 },
+];
+
+const TimeZoneSelector = (props) => {
+  var options = [];
+  var localOffset = new Date().getTimezoneOffset();
+
+  timeZones.forEach((tz) => {
+    options.push(
+      <option key={tz.short} value={tz.offset}>
+        {tz.short} - {tz.location}
+      </option>
     );
-  }
-}
+  });
+
+  return (
+    <select defaultValue={localOffset} {...props}>
+      {options}
+    </select>
+  );
+};
+
+export default TimeZoneSelector;
