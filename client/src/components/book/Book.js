@@ -9,7 +9,6 @@ import DaySchedule from "./bookSchedule/DaySchedule";
 import { addMinutes, firstOfMonthUTC } from "../../helpers/dateTime";
 import ScheduleSelector from "./ScheduleSelector";
 import Spinner from "../general/spinner/Spinner";
-import moment from "moment";
 import { createTimes } from "../../helpers/schedule";
 
 const BookContainer = styled.div`

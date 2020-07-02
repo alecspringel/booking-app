@@ -1,46 +1,65 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import styled, { ThemeProvider } from "styled-components";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
+import Header from "./parts/Header";
 import MeetingList from "./MeetingList";
 import EventForm from "./EventForm";
 import SetupPage from "./SetupPage";
 import ScheduleMaker from "./ScheduleMaker";
+import {
+  BrowserRouter as HashRouter,
+  Switch,
+  Route,
+  NavLink,
+} from "react-router-dom";
+import Profile from "./profile/Profile";
 
 class Dashboard extends Component {
-  onLogoutClick = (e) => {
-    e.preventDefault();
-    this.props.logoutUser();
-  };
   render() {
     const { user } = this.props.auth;
-    return (
-      <div style={{ height: "75vh" }} className="container valign-wrapper">
-        {/* <EventForm/> */}
-        <div className="row">
-          <div className="col s12 center-align">
-            <h4>
-              <b>Hey there,</b> {user.first.split(" ")[0]}
-              <SetupPage />
-              <ScheduleMaker />
-            </h4>
+    // Styled Components Theme
+    const theme = {
+      primary: "#4F5DDA",
+    };
 
-            <button
-              style={{
-                width: "150px",
-                borderRadius: "3px",
-                letterSpacing: "1.5px",
-                marginTop: "1rem",
-              }}
-              onClick={this.onLogoutClick}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-            >
-              Logout
-            </button>
+    return (
+      <HashRouter>
+        <ThemeProvider theme={theme}>
+          <Header />
+          <MenuBar>
+            <div className="content">
+              <div>
+                <Navigation>
+                  <ul>
+                    <NavItem>
+                      <NavLink exact to="/dashboard">
+                        Appointments
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink to="/dashboard/availability">
+                        Availability
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink to="/dashboard/profile">Profile</NavLink>
+                    </NavItem>
+                  </ul>
+                </Navigation>
+              </div>
+            </div>
+          </MenuBar>
+          {/* <SetupPage />
+        <ScheduleMaker /> */}
+          <div className="content">
+            <Route exact path="/dashboard" component={Header} />
+            <Route path="/dashboard/availability" component={SetupPage} />
+            <Route path="/dashboard/profile" component={Profile} />
           </div>
-        </div>
-        {/* <MeetingList/> */}
-      </div>
+        </ThemeProvider>
+      </HashRouter>
     );
   }
 }
@@ -53,3 +72,23 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 export default connect(mapStateToProps, { logoutUser })(Dashboard);
+
+const MenuBar = styled.div`
+  background: white;
+  width: 100%;
+  height: 52px;
+  box-shadow: 3px 3px #00000016;
+  line-height: 52px;
+`;
+
+const Navigation = styled.nav`
+  display: inline-block;
+  text-align: left;
+  margin-left: 20px;
+`;
+
+const NavItem = styled.li`
+  display: inline-block;
+  margin-right: 30px;
+  font-size: 20px;
+`;

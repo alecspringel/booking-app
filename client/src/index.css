@@ -32,3 +32,19 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+ul,
+li,
+a {
+  text-decoration: none;
+  color: #000000; /* For Example */
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* wrapper for client login portal */
+.content {
+  max-width: 1300px;
+  margin: auto;
+}
