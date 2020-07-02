@@ -22,7 +22,8 @@ router.post("/schedule/create", authUser, (req, res) => {
       console.log(req.body);
       const newSchedule = {
         title: req.body.title,
-        slots: req.body.slots,
+        description: req.body.description,
+        duration: req.body.duration,
       };
       user.schedules.push(newSchedule);
       user.save();

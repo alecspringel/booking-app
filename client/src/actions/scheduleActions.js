@@ -7,18 +7,19 @@ import {
 } from "./types";
 import { daysInMonth, addDays } from "../helpers/dateTime";
 
-export const createSchedule = (title, slots) => (dispatch) => {
+export const createSchedule = (title, description, duration) => (dispatch) => {
   const token = localStorage.getItem("jwtToken");
   const storedToken = {
     headers: {
       Authorization: token,
     },
   };
-  console.log(slots);
+  console.log("sending");
   axios
     .post("/api/users/schedule/create", {
       title,
-      slots,
+      description,
+      duration,
     })
     .then((res) => {
       //dispatch(setSchedule(res.data));

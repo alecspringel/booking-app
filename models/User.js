@@ -35,6 +35,8 @@ const UserSchema = new Schema({
   schedules: [
     {
       title: String,
+      description: String,
+      duration: Number,
       slots: [
         {
           available: Boolean,

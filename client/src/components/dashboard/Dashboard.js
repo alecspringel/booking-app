@@ -15,7 +15,8 @@ import {
   NavLink,
 } from "react-router-dom";
 import Profile from "./profile/Profile";
-import ScheduleTypes from "./availability/ScheduleTypes";
+import AvailabilityMenu from "./availability/AvailabilityMenu";
+import NewSchedule from "./newSchedule/NewSchedule";
 
 class Dashboard extends Component {
   render() {
@@ -53,9 +54,15 @@ class Dashboard extends Component {
             </div>
           </MenuBar>
           <div className="content">
-            <Route exact path="/dashboard" component={Header} />
-            <Route path="/dashboard/availability" component={ScheduleTypes} />
-            <Route path="/dashboard/profile" component={Profile} />
+            <Switch>
+              <Route exact path="/dashboard" component={Header} />
+              <Route
+                path="/dashboard/availability"
+                component={AvailabilityMenu}
+              />
+              <Route path="/dashboard/profile" component={Profile} />
+              <Route path="/dashboard/newSchedule" component={NewSchedule} />
+            </Switch>
           </div>
         </ThemeProvider>
       </HashRouter>
