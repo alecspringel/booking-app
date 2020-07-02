@@ -1,4 +1,8 @@
-import { SET_BOOKING_SCHEDULE, SCHEDULE_LOADING } from "../actions/types";
+import {
+  SET_BOOKING_SCHEDULE,
+  SCHEDULE_LOADING,
+  SET_SCHEDULE_LIST,
+} from "../actions/types";
 
 const initialState = {
   monthSchedule: null,
@@ -6,6 +10,11 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case SET_SCHEDULE_LIST:
+      return {
+        ...state,
+        all: action.payload,
+      };
     case SET_BOOKING_SCHEDULE:
       return {
         ...state,

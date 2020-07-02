@@ -1,5 +1,10 @@
 import axios from "axios";
-import { GET_ERRORS, SET_BOOKING_SCHEDULE, SCHEDULE_LOADING } from "./types";
+import {
+  GET_ERRORS,
+  SET_BOOKING_SCHEDULE,
+  SCHEDULE_LOADING,
+  SET_SCHEDULE_LIST,
+} from "./types";
 import { daysInMonth, addDays } from "../helpers/dateTime";
 
 export const createSchedule = (title, slots) => (dispatch) => {
@@ -24,6 +29,22 @@ export const createSchedule = (title, slots) => (dispatch) => {
         payload: err,
       })
     );
+};
+
+export const getAllSchedules = () => (dispatch) => {
+  console.log("sent");
+  axios
+    .get("/api/users/schedules")
+    .then((res) => {
+      dispatch(setScheduleList(res.data));
+    })
+    .catch((err) =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err,
+      })
+    );
+  return true;
 };
 
 export const getSchedule = (userURL, scheduleTitle, start, end) => (
@@ -78,6 +99,13 @@ export const getMonthSchedule = (userURL, date, scheduleTitle = null) => (
         payload: err,
       })
     );
+};
+
+export const setScheduleList = (scheduleList) => {
+  return {
+    type: SET_SCHEDULE_LIST,
+    payload: scheduleList,
+  };
 };
 
 export const setSchedule = (scheduleMonth) => {
