@@ -15,10 +15,14 @@ const AMPM = styled.select`
 class TimeSelector extends Component {
   constructor(props) {
     super(props);
+    var hours = Math.floor(this.props.time / 60);
+    if (hours > 12) {
+      hours = hours - 12;
+    }
     this.state = {
-      hour: "9",
-      minute: "00",
-      AmPm: this.props.default,
+      hour: hours,
+      minute: this.padMinutes(this.props.time % 60),
+      AmPm: this.props.time > 720 ? "PM" : "AM",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleAmPm = this.handleAmPm.bind(this);
@@ -59,11 +63,12 @@ class TimeSelector extends Component {
   }
 
   timeHandler() {
-    this.props.timeHandler(
-      this.state.hour,
-      parseInt(this.state.minute),
-      this.state.AmPm
-    );
+    var minutes = this.state.hour * 60;
+    minutes += parseInt(this.state.minute);
+    if (this.state.AmPm === "PM") {
+      minutes += 12 * 60;
+    }
+    this.props.timeHandler(this.props.id, this.props.startOrEnd, minutes);
   }
 
   render() {
@@ -83,7 +88,7 @@ class TimeSelector extends Component {
           value={this.state.minute}
         />
         <AMPM onChange={this.handleAmPm}>
-          {this.props.default === "AM" ? (
+          {this.state.AmPm === "AM" ? (
             <>
               <option value="AM" selected="selected">
                 AM

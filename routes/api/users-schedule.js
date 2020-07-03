@@ -53,6 +53,26 @@ router.get("/schedules", authUser, (req, res) => {
   });
 });
 
+router.get("/schedule/description", authUser, (req, res) => {
+  // Get authorized user from decoded token (in middleware)
+  const authUserID = req.user.id;
+  User.findById(authUserID).then((user) => {
+    if (!user) {
+      return res.status(404).json({ email: "User does not exist" });
+    } else {
+      // Collect all schedules the user has
+      var userSchedules = user.schedules;
+
+      var selected = userSchedules.find(
+        (schedule) => schedule.title === req.query.scheduleTitle
+      );
+
+      // If user has no schedules, process empty list
+      res.send(selected);
+    }
+  });
+});
+
 router.get("/schedule", (req, res) => {
   // Get authorized user from decoded token (in middleware)
   const userURL = req.query.userURL;

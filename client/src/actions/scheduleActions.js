@@ -4,6 +4,7 @@ import {
   SET_BOOKING_SCHEDULE,
   SCHEDULE_LOADING,
   SET_SCHEDULE_LIST,
+  SET_EDIT_SCHEDULE,
 } from "./types";
 import { daysInMonth, addDays } from "../helpers/dateTime";
 
@@ -75,6 +76,31 @@ export const getSchedule = (userURL, scheduleTitle, start, end) => (
   return true;
 };
 
+export const getEditSchedule = (scheduleTitle) => (dispatch) => {
+  const params = {
+    scheduleTitle,
+  };
+  dispatch(scheduleLoading());
+  axios
+    .get("/api/users/schedule/description", {
+      params,
+    })
+    .then((res) => {
+      console.log(res.data);
+      if (res.data.length === 0) {
+        console.log("fuck");
+      }
+      dispatch(setEditSchedule(res.data));
+    })
+    .catch((err) =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err,
+      })
+    );
+  return true;
+};
+
 export const getMonthSchedule = (userURL, date, scheduleTitle = null) => (
   dispatch
 ) => {
@@ -103,10 +129,19 @@ export const getMonthSchedule = (userURL, date, scheduleTitle = null) => (
     );
 };
 
+// For user dashboard (viewing all schedules)
 export const setScheduleList = (scheduleList) => {
   return {
     type: SET_SCHEDULE_LIST,
     payload: scheduleList,
+  };
+};
+
+// For editing schedules in user dashboard (sets schedule information)
+export const setEditSchedule = (schedule) => {
+  return {
+    type: SET_EDIT_SCHEDULE,
+    payload: schedule,
   };
 };
 

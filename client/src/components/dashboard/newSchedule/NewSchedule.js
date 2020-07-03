@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { compose } from "redux";
 import IntervalSelector from "./IntervalSelector";
 import { createSchedule } from "../../../actions/scheduleActions";
 
@@ -30,12 +29,17 @@ class NewSchedule extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    var response = this.props.createSchedule(
-      this.state.title,
-      this.state.description,
-      this.state.duration
-    );
-    console.log(response);
+    // var response = this.props.createSchedule(
+    //   this.state.title,
+    //   this.state.description,
+    //   this.state.duration
+    // ); Place inside push history
+    const path = "/dashboard/schedule/edit/" + this.state.title;
+    this.props.history.push({
+      pathname: path,
+      state: { title: this.state.title },
+    });
+    // console.log(response);
   }
 
   render() {
@@ -58,7 +62,6 @@ class NewSchedule extends Component {
     );
   }
 }
-export default compose(
-  withRouter,
-  connect(null, { createSchedule })(NewSchedule)
-);
+
+const NewScheduleWithRouter = withRouter(NewSchedule);
+export default connect(null, { createSchedule })(NewScheduleWithRouter);

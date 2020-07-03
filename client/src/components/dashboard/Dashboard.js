@@ -17,13 +17,30 @@ import {
 import Profile from "./profile/Profile";
 import AvailabilityMenu from "./availability/AvailabilityMenu";
 import NewSchedule from "./newSchedule/NewSchedule";
+import EditSchedule from "./editSchedule/EditSchedule";
 
 class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: "appointments",
+    };
+
+    this.setActiveMenu = this.setActiveMenu.bind(this);
+  }
+
+  setActiveMenu(e) {
+    this.setState({
+      active: e.target.name,
+    });
+  }
+
   render() {
     const { user } = this.props.auth;
     // Styled Components Theme
     const theme = {
       primary: "#4F5DDA",
+      border: "4px",
     };
 
     return (
@@ -34,16 +51,33 @@ class Dashboard extends Component {
             <div>
               <Navigation>
                 <ul>
-                  <NavItem>
-                    <NavLink exact to="/dashboard">
+                  <NavItem active={this.state.active === "appointments"}>
+                    <NavLink
+                      exact
+                      to="/dashboard"
+                      name="appointments"
+                      onClick={this.setActiveMenu}
+                    >
                       Appointments
                     </NavLink>
                   </NavItem>
-                  <NavItem>
-                    <NavLink to="/dashboard/availability">Availability</NavLink>
+                  <NavItem active={this.state.active === "schedules"}>
+                    <NavLink
+                      to="/dashboard/schedule"
+                      name="schedules"
+                      onClick={this.setActiveMenu}
+                    >
+                      Schedules
+                    </NavLink>
                   </NavItem>
-                  <NavItem>
-                    <NavLink to="/dashboard/profile">Profile</NavLink>
+                  <NavItem active={this.state.active === "profile"}>
+                    <NavLink
+                      to="/dashboard/profile"
+                      name="profile"
+                      onClick={this.setActiveMenu}
+                    >
+                      Profile
+                    </NavLink>
                   </NavItem>
                 </ul>
               </Navigation>
@@ -54,11 +88,21 @@ class Dashboard extends Component {
           <Switch>
             <Route exact path="/dashboard" component={Header} />
             <Route
-              path="/dashboard/availability"
+              exact
+              path="/dashboard/schedule"
               component={AvailabilityMenu}
             />
-            <Route path="/dashboard/profile" component={Profile} />
-            <Route path="/dashboard/schedule/create" component={NewSchedule} />
+            <Route exact path="/dashboard/profile" component={Profile} />
+            <Route
+              exact
+              path="/dashboard/schedule/create"
+              component={NewSchedule}
+            />
+            <Route
+              exact
+              path="/dashboard/schedule/edit/:title"
+              component={EditSchedule}
+            />
           </Switch>
         </div>
       </ThemeProvider>
@@ -86,11 +130,14 @@ const MenuBar = styled.div`
 const Navigation = styled.nav`
   display: inline-block;
   text-align: left;
-  margin-left: 20px;
 `;
 
 const NavItem = styled.li`
   display: inline-block;
   margin-right: 30px;
-  font-size: 20px;
+  font-size: 18px;
+  border-bottom: ${(props) =>
+    props.active
+      ? "3px solid " + props.theme.primary
+      : "3px solid transparent"};
 `;

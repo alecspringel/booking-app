@@ -2,6 +2,7 @@ import {
   SET_BOOKING_SCHEDULE,
   SCHEDULE_LOADING,
   SET_SCHEDULE_LIST,
+  SET_EDIT_SCHEDULE,
 } from "../actions/types";
 
 const initialState = {
@@ -14,6 +15,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         all: action.payload,
+      };
+    case SET_EDIT_SCHEDULE:
+      return {
+        ...state,
+        edit: action.payload,
+        loading: false,
       };
     case SET_BOOKING_SCHEDULE:
       return {
