@@ -9,6 +9,30 @@ export function formatTime(date) {
   return strTime;
 }
 
+export function formatMinutesToTime(minutes) {
+  var hours = Math.floor(minutes / 60);
+  if (hours > 12) {
+    hours = hours - 12;
+  }
+  // If minutes are in between 12AM - 1AM (0 - 60 minutes)
+  if (minutes < 60) {
+    hours = 12;
+  }
+  hours = hours.toString();
+  var minutes = padMinutes(minutes % 60).toString();
+  var AmPm = minutes > 720 ? "PM" : "AM";
+  return hours + ":" + minutes + " " + AmPm;
+}
+
+export function padMinutes(timeInt) {
+  var time = timeInt.toString();
+  if (time.length < 2) {
+    return "0" + time;
+  } else {
+    return time;
+  }
+}
+
 export function addMinutes(date, minutes) {
   return new Date(date.getTime() + minutes * 60000);
 }

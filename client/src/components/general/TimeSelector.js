@@ -19,6 +19,10 @@ class TimeSelector extends Component {
     if (hours > 12) {
       hours = hours - 12;
     }
+    // If minutes are in between 12AM - 1AM (0 - 60 minutes)
+    if (this.props.time < 60) {
+      hours = 12;
+    }
     this.state = {
       hour: hours,
       minute: this.padMinutes(this.props.time % 60),
@@ -63,7 +67,11 @@ class TimeSelector extends Component {
   }
 
   timeHandler() {
-    var minutes = this.state.hour * 60;
+    var hour = this.state.hour;
+    if (hour === 12) {
+      hour = 0;
+    }
+    var minutes = hour * 60;
     minutes += parseInt(this.state.minute);
     if (this.state.AmPm === "PM") {
       minutes += 12 * 60;

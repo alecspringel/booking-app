@@ -1,73 +1,91 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import WeekdayModal from "./WeekdayModal";
+import WeekdayTimes from "./parts/WeekdayTimes";
+import WeekdayBox from "./parts/WeekdayBox";
 
 export default class WeekdaySchedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
       weekdayModal: false,
+      weekdayName: null,
       weekday: null,
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
 
-  toggleModal(weekday) {
+  toggleModal(weekday, weekdayName) {
     console.log("toggle");
     this.setState({
       weekdayModal: !this.state.weekdayModal,
-      selected: weekday,
+      weekdayName,
+      weekday,
     });
   }
 
   render() {
     return (
-      <>
-        <h3>Typically Available</h3>
-        <WeekGrid>
-          <Weekday onClick={() => this.toggleModal("Monday")}>
-            <Label>
-              <p>Monday</p>
-            </Label>
-          </Weekday>
-          <Weekday>
-            <Label>
-              <p>Tuesday</p>
-            </Label>
-          </Weekday>
-          <Weekday>
-            <Label>
-              <p>Wednesday</p>
-            </Label>
-          </Weekday>
-          <Weekday>
-            <Label>
-              <p>Thursday</p>
-            </Label>
-          </Weekday>
-          <Weekday>
-            <Label>
-              <p>Friday</p>
-            </Label>
-          </Weekday>
-          <Weekday>
-            <Label>
-              <p>Saturday</p>
-            </Label>
-          </Weekday>
-          <Weekday>
-            <Label>
-              <p>Sunday</p>
-            </Label>
-          </Weekday>
-        </WeekGrid>
-        {this.state.weekdayModal && (
-          <WeekdayModal
-            weekday={this.state.selected}
-            close={this.toggleModal}
-          />
+      <div>
+        {this.props.weekdaySchedule && (
+          <>
+            <h3>Typically Available</h3>
+            <WeekGrid>
+              <WeekdayBox
+                weekday={1}
+                weekdayName={"Monday"}
+                weekdaySchedule={this.props.weekdaySchedule}
+                toggleModal={this.toggleModal}
+              />
+              <WeekdayBox
+                weekday={2}
+                weekdayName={"Tuesday"}
+                weekdaySchedule={this.props.weekdaySchedule}
+                toggleModal={this.toggleModal}
+              />
+              <WeekdayBox
+                weekday={3}
+                weekdayName={"Wednesday"}
+                weekdaySchedule={this.props.weekdaySchedule}
+                toggleModal={this.toggleModal}
+              />
+              <WeekdayBox
+                weekday={4}
+                weekdayName={"Thursday"}
+                weekdaySchedule={this.props.weekdaySchedule}
+                toggleModal={this.toggleModal}
+              />
+              <WeekdayBox
+                weekday={5}
+                weekdayName={"Friday"}
+                weekdaySchedule={this.props.weekdaySchedule}
+                toggleModal={this.toggleModal}
+              />
+              <WeekdayBox
+                weekday={6}
+                weekdayName={"Saturday"}
+                weekdaySchedule={this.props.weekdaySchedule}
+                toggleModal={this.toggleModal}
+              />
+              <WeekdayBox
+                weekday={0}
+                weekdayName={"Sunday"}
+                weekdaySchedule={this.props.weekdaySchedule}
+                toggleModal={this.toggleModal}
+              />
+            </WeekGrid>
+            {this.state.weekdayModal && (
+              <WeekdayModal
+                saveWeekday={this.props.saveWeekday}
+                weekday={this.state.weekday}
+                weekdayName={this.state.weekdayName}
+                weekdaySchedule={this.props.weekdaySchedule[this.state.weekday]}
+                close={this.toggleModal}
+              />
+            )}
+          </>
         )}
-      </>
+      </div>
     );
   }
 }
@@ -76,23 +94,4 @@ const WeekGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-column-gap: 15px;
-`;
-
-const Weekday = styled.div`
-  height: 100px;
-  border: 1px solid #d5d5d5;
-  position: relative;
-
-  &:hover {
-    outline: 1px solid ${(props) => props.theme.primary};
-  }
-`;
-
-const Label = styled.div`
-  position: absolute;
-  top: 0;
-  width: 100%;
-  background: #d5d5d5;
-  color: white;
-  padding: 2px 0;
 `;

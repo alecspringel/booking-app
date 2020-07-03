@@ -6,10 +6,17 @@ import WeekdayInterval from "./parts/WeekdayInterval";
 class WeekdayModal extends Component {
   constructor(props) {
     super(props);
+    // Need to assign keys to each interval from the master schedule
+    var intervals = [];
+    props.weekdaySchedule.forEach((interval) => intervals.push(interval));
+    //var intervals = props.weekdaySchedule;
+    //intervals.forEach((interval, index) => (interval.id = index));
+    console.log(intervals);
     this.state = {
-      intervals: [],
-      id: 0,
+      intervals: intervals,
+      id: intervals.length,
     };
+    this.saveWeekday = this.saveWeekday.bind(this);
     this.addInterval = this.addInterval.bind(this);
     this.removeInterval = this.removeInterval.bind(this);
     this.setTime = this.setTime.bind(this);
@@ -53,6 +60,11 @@ class WeekdayModal extends Component {
     this.setState({ intervals: update });
   }
 
+  saveWeekday() {
+    this.props.saveWeekday(this.props.weekday, this.state.intervals);
+    this.props.close();
+  }
+
   render() {
     var timeSelectors = [];
     this.state.intervals.forEach((interval) => {
@@ -71,10 +83,12 @@ class WeekdayModal extends Component {
       <Modal
         content={
           <>
-            <h3>{this.props.weekday}</h3>
-            <Exit onClick={this.props.close}>&times;</Exit>
+            <h3>{this.props.weekdayName}</h3>
             {timeSelectors}
             <button onClick={this.addInterval}>+ Availability</button>
+            <br />
+            <button onClick={this.props.close}>Cancel</button>
+            <button onClick={this.saveWeekday}>Save</button>
           </>
         }
       />
