@@ -27,45 +27,41 @@ class Dashboard extends Component {
     };
 
     return (
-      <HashRouter>
-        <ThemeProvider theme={theme}>
-          <Header />
-          <MenuBar>
-            <div className="content">
-              <div>
-                <Navigation>
-                  <ul>
-                    <NavItem>
-                      <NavLink exact to="/dashboard">
-                        Appointments
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink to="/dashboard/availability">
-                        Availability
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink to="/dashboard/profile">Profile</NavLink>
-                    </NavItem>
-                  </ul>
-                </Navigation>
-              </div>
-            </div>
-          </MenuBar>
+      <ThemeProvider theme={theme}>
+        <Header />
+        <MenuBar>
           <div className="content">
-            <Switch>
-              <Route exact path="/dashboard" component={Header} />
-              <Route
-                path="/dashboard/availability"
-                component={AvailabilityMenu}
-              />
-              <Route path="/dashboard/profile" component={Profile} />
-              <Route path="/dashboard/newSchedule" component={NewSchedule} />
-            </Switch>
+            <div>
+              <Navigation>
+                <ul>
+                  <NavItem>
+                    <NavLink exact to="/dashboard">
+                      Appointments
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink to="/dashboard/availability">Availability</NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink to="/dashboard/profile">Profile</NavLink>
+                  </NavItem>
+                </ul>
+              </Navigation>
+            </div>
           </div>
-        </ThemeProvider>
-      </HashRouter>
+        </MenuBar>
+        <div className="content">
+          <Switch>
+            <Route exact path="/dashboard" component={Header} />
+            <Route
+              path="/dashboard/availability"
+              component={AvailabilityMenu}
+            />
+            <Route path="/dashboard/profile" component={Profile} />
+            <Route path="/dashboard/schedule/create" component={NewSchedule} />
+          </Switch>
+        </div>
+      </ThemeProvider>
     );
   }
 }

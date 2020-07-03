@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import IntervalSelector from "./IntervalSelector";
 import { createSchedule } from "../../../actions/scheduleActions";
 
@@ -28,11 +30,12 @@ class NewSchedule extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.createSchedule(
+    var response = this.props.createSchedule(
       this.state.title,
       this.state.description,
       this.state.duration
     );
+    console.log(response);
   }
 
   render() {
@@ -55,4 +58,7 @@ class NewSchedule extends Component {
     );
   }
 }
-export default connect(null, { createSchedule })(NewSchedule);
+export default compose(
+  withRouter,
+  connect(null, { createSchedule })(NewSchedule)
+);

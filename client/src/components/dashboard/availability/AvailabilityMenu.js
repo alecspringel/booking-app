@@ -2,13 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { getAllSchedules } from "../../../actions/scheduleActions";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 
 class AvailabilityMenu extends Component {
   constructor(props) {
@@ -18,7 +12,7 @@ class AvailabilityMenu extends Component {
   render() {
     return (
       <div>
-        <Link to={`/dashboard/newSchedule`}>+ New Appointment Type</Link>
+        <Link to={`/dashboard/schedule/create`}>+ New Appointment Type</Link>
         {this.props.scheduleList &&
           this.props.scheduleList.map((schedule) => (
             <ScheduleItem>

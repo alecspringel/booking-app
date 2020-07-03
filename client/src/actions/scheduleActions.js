@@ -22,6 +22,7 @@ export const createSchedule = (title, description, duration) => (dispatch) => {
       duration,
     })
     .then((res) => {
+      return res.data;
       //dispatch(setSchedule(res.data));
     })
     .catch((err) =>
