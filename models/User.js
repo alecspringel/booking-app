@@ -37,6 +37,16 @@ const UserSchema = new Schema({
       title: String,
       description: String,
       duration: Number,
+      offset: Number,
+      weekdays: [
+        [
+          {
+            weekday: Number,
+            start: Number,
+            end: Number,
+          },
+        ],
+      ],
       slots: [
         {
           available: Boolean,

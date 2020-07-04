@@ -72,4 +72,40 @@ function getSlots(date, begin, finish, interval) {
   return schedList;
 }
 
-module.exports = { checkAvailability, findScheduleByTitle, getSlots };
+// Returns list of possible time slots
+function getWeekdaySlots(schedule, start, end) {
+  var slots = [];
+  var start = new Date(start);
+  start.setHours(0, 0, 0, 0);
+  start = addMinutes(start, new Date().getTimezoneOffset() * -1);
+  var weekday = start.getDay();
+  var intervals = schedule.weekdays[(weekday + 1) % 6];
+  while (start <= new Date(end)) {
+    intervals.forEach((interval) => {
+      var startCopy = addMinutes(start, interval.start);
+      startCopy = addMinutes(startCopy, schedule.offset);
+      var current = interval.start;
+      while (current <= interval.end) {
+        const slot = {
+          available: true,
+          start: startCopy,
+          end: addMinutes(startCopy, schedule.duration),
+        };
+        slots.push(slot);
+        current += schedule.duration;
+        startCopy = addMinutes(startCopy, schedule.duration);
+      }
+    });
+    start = addMinutes(start, 1440);
+    weekday = (start.getDay() + 1) % 6;
+    intervals = schedule.weekdays[weekday];
+  }
+  return slots;
+}
+
+module.exports = {
+  checkAvailability,
+  findScheduleByTitle,
+  getSlots,
+  getWeekdaySlots,
+};

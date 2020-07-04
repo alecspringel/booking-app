@@ -34,6 +34,31 @@ export const createSchedule = (title, description, duration) => (dispatch) => {
     );
 };
 
+export const setSchedule = (title, weekdaySchedule, offset) => (dispatch) => {
+  const token = localStorage.getItem("jwtToken");
+  const storedToken = {
+    headers: {
+      Authorization: token,
+    },
+  };
+  axios
+    .post("/api/users/schedule/edit", {
+      title,
+      weekdaySchedule,
+      offset,
+    })
+    .then((res) => {
+      return res.data;
+      //dispatch(setSchedule(res.data));
+    })
+    .catch((err) =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err,
+      })
+    );
+};
+
 export const getAllSchedules = () => (dispatch) => {
   console.log("sent");
   axios
@@ -65,7 +90,7 @@ export const getSchedule = (userURL, scheduleTitle, start, end) => (
       params,
     })
     .then((res) => {
-      dispatch(setSchedule(res.data));
+      dispatch(setBookingSchedule(res.data));
     })
     .catch((err) =>
       dispatch({
@@ -82,14 +107,10 @@ export const getEditSchedule = (scheduleTitle) => (dispatch) => {
   };
   dispatch(scheduleLoading());
   axios
-    .get("/api/users/schedule/description", {
+    .get("/api/users/schedule/view", {
       params,
     })
     .then((res) => {
-      console.log(res.data);
-      if (res.data.length === 0) {
-        console.log("fuck");
-      }
       dispatch(setEditSchedule(res.data));
     })
     .catch((err) =>
@@ -119,7 +140,7 @@ export const getMonthSchedule = (userURL, date, scheduleTitle = null) => (
     })
     .then((res) => {
       console.log(res.data);
-      dispatch(setSchedule(res.data));
+      dispatch(setBookingSchedule(res.data));
     })
     .catch((err) =>
       dispatch({
@@ -145,7 +166,7 @@ export const setEditSchedule = (schedule) => {
   };
 };
 
-export const setSchedule = (scheduleMonth) => {
+export const setBookingSchedule = (scheduleMonth) => {
   return {
     type: SET_BOOKING_SCHEDULE,
     payload: scheduleMonth,

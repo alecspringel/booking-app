@@ -5,15 +5,45 @@ import WeekdaySchedule from "./WeekdaySchedule";
 import ScheduleDescription from "./ScheduleDescription";
 import { getEditSchedule } from "../../../actions/scheduleActions";
 import Spinner from "../../general/spinner/Spinner";
+import { setSchedule } from "../../../actions/scheduleActions";
+import TimeZoneSelector from "../../general/TimeZoneSelector";
 
 class EditSchedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
       weekdaySchedule: [[], [], [], [], [], [], []],
+      offset: new Date().getTimezoneOffset(),
     };
+    this.saveSettings = this.saveSettings.bind(this);
     this.saveWeekday = this.saveWeekday.bind(this);
+    this.setTimeZone = this.setTimeZone.bind(this);
     this.props.getEditSchedule(this.props.match.params.title);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.schedule !== this.props.schedule) {
+      var weekdays = [[], [], [], [], [], [], []];
+      if (this.props.schedule.weekdays) {
+        weekdays = this.props.schedule.weekdays;
+      }
+      this.setState({
+        //update the state after checking
+        weekdaySchedule: weekdays,
+      });
+    }
+  }
+
+  setTimeZone(e) {
+    this.setState({ offset: e.target.value });
+  }
+
+  saveSettings() {
+    this.props.setSchedule(
+      this.props.match.params.title,
+      this.state.weekdaySchedule,
+      this.state.offset
+    );
   }
 
   saveWeekday(weekday, intervals) {
@@ -32,10 +62,12 @@ class EditSchedule extends Component {
         {this.props.schedule && this.props.schedule.length !== 0 ? (
           <>
             <ScheduleDescription title={this.props.schedule.title} />
+            <TimeZoneSelector onChange={this.setTimeZone} />
             <WeekdaySchedule
               saveWeekday={this.saveWeekday}
               weekdaySchedule={this.state.weekdaySchedule}
             />
+            <button onClick={this.saveSettings}>Save</button>
           </>
         ) : (
           <h1>Not found</h1>
@@ -50,4 +82,6 @@ const mapStateToProps = (state) => ({
   loading: state.schedule.loading,
 });
 
-export default connect(mapStateToProps, { getEditSchedule })(EditSchedule);
+export default connect(mapStateToProps, { getEditSchedule, setSchedule })(
+  EditSchedule
+);

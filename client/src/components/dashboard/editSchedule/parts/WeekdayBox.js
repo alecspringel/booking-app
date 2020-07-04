@@ -20,9 +20,10 @@ const Weekday = styled.div`
   height: 100px;
   border: 1px solid #d5d5d5;
   position: relative;
+  border-radius: ${(props) => props.theme.border};
 
   &:hover {
-    outline: 1px solid ${(props) => props.theme.primary};
+    border: 1px solid ${(props) => props.theme.primary};
   }
 
   ${(props) =>
@@ -37,6 +38,8 @@ const Label = styled.div`
   background: #d5d5d5;
   color: white;
   padding: 2px 0;
+  border-radius: ${(props) => props.theme.border - 1};
+
   ${(props) =>
     props.active &&
     css`

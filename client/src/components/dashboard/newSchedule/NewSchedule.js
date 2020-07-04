@@ -29,11 +29,11 @@ class NewSchedule extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // var response = this.props.createSchedule(
-    //   this.state.title,
-    //   this.state.description,
-    //   this.state.duration
-    // ); Place inside push history
+    var response = this.props.createSchedule(
+      this.state.title,
+      this.state.description,
+      this.state.duration
+    );
     const path = "/dashboard/schedule/edit/" + this.state.title;
     this.props.history.push({
       pathname: path,

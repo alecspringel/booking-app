@@ -9,13 +9,22 @@ class AvailabilityMenu extends Component {
     super(props);
     this.props.getAllSchedules();
   }
+
+  editSchedule(title) {
+    const path = "/dashboard/schedule/edit/" + title;
+    this.props.history.push({
+      pathname: path,
+      state: { title },
+    });
+  }
+
   render() {
     return (
       <div>
         <Link to={`/dashboard/schedule/create`}>+ New Appointment Type</Link>
         {this.props.scheduleList &&
           this.props.scheduleList.map((schedule) => (
-            <ScheduleItem>
+            <ScheduleItem onClick={() => this.editSchedule(schedule)}>
               <h6>{schedule}</h6>
             </ScheduleItem>
           ))}

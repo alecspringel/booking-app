@@ -30,6 +30,7 @@ const Slot = styled.button`
 `;
 
 const TimeSlot = (props) => {
+  console.log(props);
   return (
     <Slot
       onClick={() => props.bookMeeting(props.slot.start, props.slot.end)}

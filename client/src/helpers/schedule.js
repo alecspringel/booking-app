@@ -4,6 +4,7 @@ const { addMinutes, formatTime } = require("./dateTime");
 
 // them to the given timezone
 export function createTimes(validSlots, offset) {
+  console.log(validSlots);
   var timeList = [];
   var defaultOffset = new Date().getTimezoneOffset();
   validSlots.forEach((slot) => {
