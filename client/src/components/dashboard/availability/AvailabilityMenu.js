@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { getAllSchedules } from "../../../actions/scheduleActions";
 import { BrowserRouter as Router, Link } from "react-router-dom";
+import SecondaryButton from "../../general/SecondaryButton";
+import LinkButton from "../../general/LinkButton";
 
 class AvailabilityMenu extends Component {
   constructor(props) {
@@ -21,11 +23,17 @@ class AvailabilityMenu extends Component {
   render() {
     return (
       <div>
-        <Link to={`/dashboard/schedule/create`}>+ New Appointment Type</Link>
+        <TopBar>
+          <h2>Availability</h2>
+          <NewScheduleButton
+            path={`/dashboard/schedule/create`}
+            label={"+ New Schedule"}
+          />
+        </TopBar>
         {this.props.scheduleList &&
           this.props.scheduleList.map((schedule) => (
             <ScheduleItem onClick={() => this.editSchedule(schedule)}>
-              <h6>{schedule}</h6>
+              <h3>{schedule}</h3>
             </ScheduleItem>
           ))}
       </div>
@@ -39,6 +47,20 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, { getAllSchedules })(AvailabilityMenu);
 
+const TopBar = styled.div`
+  position: relative;
+  margin: 20px 0;
+`;
+
 const ScheduleItem = styled.div`
-  border: 1px solid grey;
+  cursor: pointer;
+  border: 1px solid #d5d5d5;
+  padding: 10px;
+  border-radius: ${(props) => props.theme.border};
+`;
+
+const NewScheduleButton = styled(LinkButton)`
+  position: absolute;
+  right: 0;
+  top: 0;
 `;

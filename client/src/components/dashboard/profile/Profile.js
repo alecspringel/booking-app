@@ -13,6 +13,7 @@ class Profile extends Component {
       <div>
         <h2>Profile</h2>
         <b>Hey there,</b> {user.first.split(" ")[0]}
+        <br />
         <button
           style={{
             width: "150px",
