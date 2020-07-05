@@ -145,7 +145,9 @@ router.get("/schedule", (req, res) => {
         req.query.start,
         req.query.end
       );
-      console.log([...checkAvailability(weekdaySlots, user.meetings)]);
+
+      //console.log([...checkAvailability(weekdaySlots, user.meetings)]);
+      //console.log(weekdaySlots);
       return res.send([
         ...checkAvailability(slots, user.meetings),
         ...checkAvailability(weekdaySlots, user.meetings),

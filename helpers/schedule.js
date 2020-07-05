@@ -75,11 +75,16 @@ function getSlots(date, begin, finish, interval) {
 // Returns list of possible time slots
 function getWeekdaySlots(schedule, start, end) {
   var slots = [];
+  console.log("start", start);
   var start = new Date(start);
-  start.setHours(0, 0, 0, 0);
-  start = addMinutes(start, new Date().getTimezoneOffset() * -1);
-  var weekday = start.getDay();
-  var intervals = schedule.weekdays[(weekday + 1) % 6];
+  start.setUTCHours(0, 0, 0, 0);
+  //console.log(start);
+  //Start at UTC converted date at 00:00:00
+  //start = addMinutes(start, new Date().getTimezoneOffset() * -1);
+  console.log(start.toUTCString());
+  var weekday = start.getUTCDay();
+  console.log(weekday);
+  var intervals = schedule.weekdays[weekday];
   while (start <= new Date(end)) {
     intervals.forEach((interval) => {
       var startCopy = addMinutes(start, interval.start);
@@ -97,7 +102,7 @@ function getWeekdaySlots(schedule, start, end) {
       }
     });
     start = addMinutes(start, 1440);
-    weekday = (start.getDay() + 1) % 6;
+    weekday = start.getUTCDay();
     intervals = schedule.weekdays[weekday];
   }
   return slots;

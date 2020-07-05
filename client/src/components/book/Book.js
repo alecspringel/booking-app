@@ -59,9 +59,10 @@ class Book extends Component {
     var shiftedDate = addMinutes(date, this.state.offset);
     console.log(this.props.monthSchedule);
     var validSlots = this.props.monthSchedule.filter((slot) => {
-      console.log(shiftedDate, addMinutes(shiftedDate, 1440));
+      console.log("VALID FROM:", shiftedDate, addMinutes(shiftedDate, 1440));
+      console.log("test", new Date(slot.start).toUTCString());
       if (
-        new Date(slot.start) > shiftedDate &&
+        new Date(slot.start) >= shiftedDate &&
         new Date(slot.start) < addMinutes(shiftedDate, 1440)
       ) {
         return slot;
