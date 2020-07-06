@@ -6,6 +6,7 @@ const {
   checkAvailability,
   getSlots,
   getWeekdaySlots,
+  getCustomSlots,
 } = require("../../helpers/schedule");
 const { validateNewSchedule } = require("../../validation/schedule");
 const { off } = require("../../models/User");
@@ -147,10 +148,12 @@ router.get("/schedule", (req, res) => {
         req.query.end
       );
 
+      var customSlots = getCustomSlots(selecedSchedule);
+
       //console.log([...checkAvailability(weekdaySlots, user.meetings)]);
       //console.log(weekdaySlots);
       return res.send([
-        // ...checkAvailability(slots, user.meetings),
+        ...checkAvailability(customSlots, user.meetings),
         ...checkAvailability(weekdaySlots, user.meetings),
       ]);
     }
