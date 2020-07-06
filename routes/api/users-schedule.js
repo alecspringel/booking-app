@@ -57,6 +57,7 @@ router.post("/schedule/edit", authUser, (req, res) => {
         (schedule) => schedule.title === req.body.title
       );
       selected.weekdays = req.body.weekdaySchedule;
+      selected.customSchedule = req.body.customSchedule;
       selected.offset = req.body.offset;
       updateSchedules.push(selected);
       user.schedules = updateSchedules;
@@ -132,14 +133,14 @@ router.get("/schedule", (req, res) => {
       }
 
       console.log(req.query.start, req.query.end);
-      var slots = selecedSchedule.slots.filter((slot) => {
-        if (
-          new Date(slot.start) > new Date(req.query.start) &&
-          new Date(slot.start) < new Date(req.query.end)
-        ) {
-          return slot;
-        }
-      });
+      // var slots = selecedSchedule.slots.filter((slot) => {
+      //   if (
+      //     new Date(slot.start) > new Date(req.query.start) &&
+      //     new Date(slot.start) < new Date(req.query.end)
+      //   ) {
+      //     return slot;
+      //   }
+      // });
       var weekdaySlots = getWeekdaySlots(
         selecedSchedule,
         req.query.start,
@@ -149,7 +150,7 @@ router.get("/schedule", (req, res) => {
       //console.log([...checkAvailability(weekdaySlots, user.meetings)]);
       //console.log(weekdaySlots);
       return res.send([
-        ...checkAvailability(slots, user.meetings),
+        // ...checkAvailability(slots, user.meetings),
         ...checkAvailability(weekdaySlots, user.meetings),
       ]);
     }

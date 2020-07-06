@@ -34,7 +34,9 @@ export const createSchedule = (title, description, duration) => (dispatch) => {
     );
 };
 
-export const setSchedule = (title, weekdaySchedule, offset) => (dispatch) => {
+export const setSchedule = (title, weekdaySchedule, customSchedule, offset) => (
+  dispatch
+) => {
   const token = localStorage.getItem("jwtToken");
   const storedToken = {
     headers: {
@@ -45,6 +47,7 @@ export const setSchedule = (title, weekdaySchedule, offset) => (dispatch) => {
     .post("/api/users/schedule/edit", {
       title,
       weekdaySchedule,
+      customSchedule,
       offset,
     })
     .then((res) => {

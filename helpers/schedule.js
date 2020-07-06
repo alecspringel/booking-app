@@ -75,22 +75,21 @@ function getSlots(date, begin, finish, interval) {
 // Returns list of possible time slots
 function getWeekdaySlots(schedule, start, end) {
   var slots = [];
-  console.log("start", start);
   var start = new Date(start);
   start.setUTCHours(0, 0, 0, 0);
-  //console.log(start);
-  //Start at UTC converted date at 00:00:00
-  //start = addMinutes(start, new Date().getTimezoneOffset() * -1);
-  console.log(start.toUTCString());
   var weekday = start.getUTCDay();
-  console.log(weekday);
   var intervals = schedule.weekdays[weekday];
+
   while (start <= new Date(end)) {
     intervals.forEach((interval) => {
       var startCopy = addMinutes(start, interval.start);
       startCopy = addMinutes(startCopy, schedule.offset);
+      var endCopy = addMinutes(startCopy, interval.end);
+      checkForCustomSlot(schedule.customSchedule, startCopy, endCopy, interval);
+      // Begin at the start of each interval, and add *duration* minutes until the end of the interval
       var current = interval.start;
       while (current <= interval.end) {
+        // If a custom slot overlaps, skip adding this slot
         const slot = {
           available: true,
           start: startCopy,
@@ -106,6 +105,11 @@ function getWeekdaySlots(schedule, start, end) {
     intervals = schedule.weekdays[weekday];
   }
   return slots;
+}
+
+function checkForCustomSlot(customSchedules, start, end, interval) {
+  console.log(start, "=====>", end);
+  console.log(customSchedules);
 }
 
 module.exports = {

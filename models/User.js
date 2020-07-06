@@ -47,11 +47,17 @@ const UserSchema = new Schema({
           },
         ],
       ],
-      slots: [
+      customSchedule: [
         {
-          available: Boolean,
           start: Date,
           end: Date,
+          intervals: [
+            {
+              weekday: Number,
+              start: Number,
+              end: Number,
+            },
+          ],
         },
       ],
     },
